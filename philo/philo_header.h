@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/07 14:08:47 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/07 14:54:59 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,5 +15,7 @@
 
 # include <stdio.h>
 # include <unistd.h>
+# include <stdlib.h>
+
 
 #endif
