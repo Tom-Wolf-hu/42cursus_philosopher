@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 20:18:06 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/07 20:26:07 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/07 21:16:49 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static void	ch_argv_msg(int err_status)
 			" int MAX = 2147483647.\033[0m\n");
 }
 
-static int	check_argval(int argc, char **argv)
+static int	check_argval(int argc, char **argv, t_input *in_args)
 {
 	int	i;
 	int	input_num;
@@ -77,18 +77,19 @@ static int	check_argval(int argc, char **argv)
 		input_num = ft_atoi_p(argv[i]);
 		if (input_num < 0)
 			return (input_num);
+		store_input(input_num, in_args);
 		i++;
 	}
 	return (1);
 }
 
-int	check_input(int argc, char **argv)
+int	check_input(int argc, char **argv, t_input *in_args)
 {
 	int	check;
 
 	if (!check_argnum(argc))
 		return (0);
-	check = check_argval(argc, argv);
+	check = check_argval(argc, argv, in_args);
 	if (check < 0)
 	{
 		ch_argv_msg(check);
