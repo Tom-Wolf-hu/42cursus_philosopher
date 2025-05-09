@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/09 00:17:30 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/09 14:42:23 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	philo_threads(t_input in_args, t_thread *th)
 	{
 		if (pthread_create(&th->philo[i], NULL, testfunc, NULL) != 0)
 		{
-			write_stderr("philo thread creation failed.\n"); // check what happened without join the threads
+			write_stderr("philo thread creation failed.\n");
 			return (free_memory(th), -2);
 		}
 		if (pthread_detach(th->philo[i]) != 0)
@@ -103,30 +103,71 @@ int	philo_threads(t_input in_args, t_thread *th)
 	return (0);
 }
 
+void	*print_monitor(void *arg)
+{
+	t_coll	*coll;
+	int	i;
+
+	i = 0;
+	coll = (t_coll *)arg;
+	while (coll->th.start_t < 0)
+	{
+		usleep(10);
+		continue ;
+	}
+	printf("The simulation start time: %ld\n", coll->th.start_t);
+	while (i < coll->in.philo_num)
+	{
+		print_message(get_current_time() - coll->th.start_t, i + 1, THINK);
+		i++;
+	}
+	return(NULL);
+}
+
+int	print_thread(t_coll *coll)
+{
+	coll->th.start_t = -1;
+	coll->ph.eat_start_t = -1;
+	if (pthread_create(&coll->th.monitor, NULL, print_monitor, (void *)coll) != 0)
+	{
+		write_stderr("monitor thread creation failed.\n");
+		return (-1);
+	}
+	if (philo_threads(coll->in, &(coll->th)) < 0)
+		return (-2);
+	coll->th.start_t = get_current_time();
+	if (coll->th.start_t < 0)
+	{
+		write_stderr("Failed to get the start_time");
+		return (-3);
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
-	t_input		in_args;
-	t_thread	th;
-	long		time_in_ms1;
-	long		time_in_ms2;
-	long		time_in_ms3;
+	t_coll	coll;
+	long	time_in_ms1;
+	long	time_in_ms2;
+	long	time_in_ms3;
 
 	// pthread_create(&id, NULL, testfunc, NULL);
-	if (!check_input(argc, argv, &in_args))
+	if (!check_input(argc, argv, &coll.in))
 		return (1);
-	if (philo_threads(in_args, &th) < 0)
+	if (print_thread(&coll) < 0)
 		return (1);
+	pthread_join(coll.th.monitor, NULL);
 	time_in_ms1 = get_current_time();
-	printf("This is the store input: %d\n", in_args.die_t);
+	printf("This is the store input: %d\n", coll.in.die_t);
 	printf("The 0.current time is: %ld\n", time_in_ms1);
-	my_usleep(10);
+	my_usleep(20);
 	time_in_ms2 = get_current_time();
 	printf("The 1.current time is: %ld\n", time_in_ms2);
 	printf("The elapsed time is: %ld\n", time_in_ms2 - time_in_ms1);
-	my_usleep(20);
+	my_usleep(60);
 	time_in_ms3 = get_current_time();
 	printf("The 2.current time is: %ld\n", time_in_ms3);
 	printf("The elapsed time is: %ld\n", time_in_ms3 - time_in_ms1);
-	free_memory(&th);
+	free_memory(&coll.th);
 	return (0);
 }

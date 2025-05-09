@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/09 00:13:16 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/09 13:56:56 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,25 @@ typedef struct s_input
 //This structure consists dynamically allocated memory: philo
 typedef struct s_thread
 {
+	long		start_t;
 	pthread_t	*philo;
 	pthread_t	monitor;
 }	t_thread;
+
+typedef struct s_philo
+{
+	long	eat_start_t;
+	int		philo_id;
+	int		num_fork;
+	t_state	st;
+}	t_philo;
+
+typedef	struct s_coll
+{
+	t_input		in;
+	t_thread	th;
+	t_philo		ph;
+}	t_coll;
 
 
 //philo_utils.c
