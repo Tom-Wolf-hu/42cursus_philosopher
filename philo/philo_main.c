@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/09 14:42:23 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/09 15:45:51 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	print_message(long time_ms, int philo_num, t_state message)
 	else if (message == THINK)
 		printf("%ld %d is thinking\n", time_ms, philo_num);
 	else if (message == DIE)
-		printf("%ld %d is died\n", time_ms, philo_num);
+		printf("\033[1;31m%ld %d is died\033[0m\n", time_ms, philo_num);
 }
 
 void	*testfunc(void *arg)
@@ -103,10 +103,31 @@ int	philo_threads(t_input in_args, t_thread *th)
 	return (0);
 }
 
+int	one_philo(long start_t,long die_t)
+{
+	long	current_t;
+
+	current_t = get_current_time();
+	if (current_t < 0)
+		return (-1);
+	print_message(current_t - start_t, 1, FORK);
+	while (current_t < start_t + die_t)
+	{
+		current_t = get_current_time();
+		if (current_t < 0)
+			return (-1);
+		usleep(100);
+		continue ;
+	}
+	print_message(current_t - start_t, 1, DIE);
+	return (0);
+}
+
 void	*print_monitor(void *arg)
 {
 	t_coll	*coll;
-	int	i;
+	int		i;
+	long	sim_start_t;
 
 	i = 0;
 	coll = (t_coll *)arg;
@@ -115,12 +136,16 @@ void	*print_monitor(void *arg)
 		usleep(10);
 		continue ;
 	}
-	printf("The simulation start time: %ld\n", coll->th.start_t);
+	sim_start_t = get_current_time();
+	if (sim_start_t < 0)
+		return ((void * )(-1));
 	while (i < coll->in.philo_num)
 	{
 		print_message(get_current_time() - coll->th.start_t, i + 1, THINK);
 		i++;
 	}
+	if (coll->in.philo_num == 1)
+		one_philo(coll->th.start_t, (long)coll->in.die_t);
 	return(NULL);
 }
 
