@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/10 16:26:23 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/10 16:57:58 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,26 +74,25 @@ void	*philos_routine(void *arg)
 	t_coll	*coll;
 
 	coll = (t_coll *)arg;
-	write(1, "hello\n", 6);
-
-	if (!coll->th.fork || pthread_mutex_lock(&(coll->th.fork[0])) != 0)
+	if (!coll->fork)
+		write(1, "trouble\n", ft_strlen_p("trouble\n"));
+	if (!coll->fork || pthread_mutex_lock(&(coll->fork[0])) != 0)
 	{
 		perror("\033[1;35mFailed lock the fork mutex\033[0m");
-		write(1, "hello3\n", 7);
 		return ((void *)1);
 	}
 	write(1, "hello2\n", 7);
 	printf("The philo[%d] are saying hello to you.\n", coll->ph.philo_id);
-	pthread_mutex_unlock(&(coll->th.fork[0]));
+	pthread_mutex_unlock(&(coll->fork[0]));
 	return ((void *)0);
 }
 
-void	free_memory(t_thread *th)
+void	free_memory(t_coll *coll)
 {
-	free(th->philo);
-	th->philo = NULL;
-	free(th->fork);
-	th->fork = NULL;
+	free(coll->th.philo);
+	coll->th.philo = NULL;
+	free(coll->fork);
+	coll->fork = NULL;
 }
 
 int	philo_threads(t_coll *coll)
@@ -180,7 +179,6 @@ int	print_thread(t_coll *coll)
 {
 	coll->th.start_t = -1;
 	coll->ph.eat_start_t = -1;
-	coll->th.fork = NULL;
 	if (pthread_create(&(coll->th.monitor), NULL, print_monitor, (void *)coll) != 0)
 	{
 		write_stderr("monitor thread creation failed.\n");
@@ -197,26 +195,28 @@ int	print_thread(t_coll *coll)
 	return (0);
 }
 
-int	create_mutexes(t_thread *th, int fork)
+// int	create_mutexes(t_thread *th, int fork);
+
+int	create_mutexes(t_coll *coll)
 {
 	int	i;
 
 	i = 0;
-	th->philo = NULL;
-	th->fork = malloc(fork * sizeof(t_thread));
-	if (!th->fork)
+	coll->th.philo = NULL;
+	coll->fork = malloc(coll->in.philo_num * sizeof(t_thread));
+	if (!coll->fork)
 	{
 		write_stderr("Failed allocate memory for fork.\n");
 		return (-1);
 	}
-	while (i < fork)
+	while (i < coll->in.philo_num)
 	{
-		if (pthread_mutex_init(&th->fork[i], NULL) != 0)
+		if (pthread_mutex_init(&coll->fork[i], NULL) != 0)
 		{
 			write_stderr("Failed to initialize the fork mutex.\n");
 			while (i >= 0)
 			{
-				pthread_mutex_destroy(&th->fork[i]);
+				pthread_mutex_destroy(&coll->fork[i]);
 				i--;
 			}
 			return (-2);
@@ -238,10 +238,12 @@ int	main(int argc, char **argv)
 	if (!check_input(argc, argv, &coll.in))
 		return (1);
 	write(1, "passed1\n", 8);
-	if (create_mutexes(&coll.th, coll.in.philo_num) < 0)
+	if (create_mutexes(&coll) < 0)
 		return(1);
 	// return(free_memory(&coll.th), 1);
 	write(1, "passed2\n", 8);
+	if (!coll.fork)
+		printf("\033[1,33mthe coll fork NULL before print_thread\n\033m");
 	if (print_thread(&coll) < 0)
 		return (1);
 	// return (free_memory(&coll.th), 1);
@@ -263,6 +265,6 @@ int	main(int argc, char **argv)
 	time_in_ms3 = get_current_time();
 	printf("The 2.current time is: %ld\n", time_in_ms3);
 	printf("The elapsed time is: %ld\n", time_in_ms3 - time_in_ms1);
-	// free_memory(&coll.th);
+	free_memory(&coll);
 	return (0);
 }

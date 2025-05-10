@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/10 16:11:44 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/10 16:33:14 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ typedef struct s_thread
 	long			start_t;
 	pthread_t		*philo;
 	pthread_t		monitor;
-	pthread_mutex_t	*fork;
 }	t_thread;
 
 typedef struct s_philo
@@ -56,9 +55,10 @@ typedef struct s_philo
 
 typedef	struct s_coll
 {
-	t_input		in;
-	t_thread	th;
-	t_philo		ph;
+	t_input			in;
+	t_thread		th;
+	t_philo			ph;
+	pthread_mutex_t	*fork;
 }	t_coll;
 
 
