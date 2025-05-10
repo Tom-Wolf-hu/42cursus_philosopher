@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 20:13:14 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/07 20:16:12 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/10 18:10:15 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,12 @@ int	ft_isdigit(char ch)
 	if (ch >= '0' && ch <= '9')
 		return (1);
 	return (0);
+}
+
+void	free_memory(t_coll *coll)
+{
+	free(coll->th.philo);
+	coll->th.philo = NULL;
+	free(coll->fork);
+	coll->fork = NULL;
 }

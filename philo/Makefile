@@ -2,9 +2,11 @@ NAME = philo
 
 
 SRC =	philo_main.c \
-		philo_utils.c \
 		philo_check_input.c \
-		philo_store.c
+		philo_message.c \
+		philo_store.c \
+		philo_time.c \
+		philo_utils.c
 
 OBJ_DIR = obj
 OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)

@@ -6,93 +6,25 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/10 16:57:58 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/10 18:27:38 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_header.h"
-
-long	get_current_time(void)
-{
-	struct timeval	current;
-	long			time_in_ms;
-
-	if (gettimeofday(&current, NULL) == -1)
-	{
-		write_stderr("Get the current time function Failed.\n");
-		return (-1);
-	}
-	time_in_ms = (current.tv_sec * 1000) + (current.tv_usec / 1000);
-	return (time_in_ms);
-}
-
-long	my_usleep(long sleep_time_ms)
-{
-	long	start_sleep;
-	long	end_sleep;
-
-	start_sleep = get_current_time();
-	if (sleep_time_ms > 10)
-		usleep(sleep_time_ms * 1000 - 10000);
-	while (1)
-	{
-		end_sleep = get_current_time();
-		if (end_sleep >= start_sleep + sleep_time_ms)
-			return (end_sleep);
-		continue ;
-	}
-	return (-1);
-}
-
-void	print_message(long time_ms, int philo_num, t_state message)
-{
-	if (message == FORK)
-		printf("%ld %d has taken a fork\n", time_ms, philo_num);
-	else if (message == EAT)
-		printf("%ld %d is eating\n", time_ms, philo_num);
-	else if (message == SLEEP)
-		printf("%ld %d is sleeping\n", time_ms, philo_num);
-	else if (message == THINK)
-		printf("%ld %d is thinking\n", time_ms, philo_num);
-	else if (message == DIE)
-		printf("\033[1;31m%ld %d is died\033[0m\n", time_ms, philo_num);
-}
-
-void	*testfunc(void *arg)
-{
-	(void) arg;
-	print_message(12, 3, FORK);
-	usleep(20000);
-	print_message(12, 4, THINK);
-	usleep(20000);
-	print_message(12, 3, DIE);
-	return (NULL);
-}
 
 void	*philos_routine(void *arg)
 {
 	t_coll	*coll;
 
 	coll = (t_coll *)arg;
-	if (!coll->fork)
-		write(1, "trouble\n", ft_strlen_p("trouble\n"));
 	if (!coll->fork || pthread_mutex_lock(&(coll->fork[0])) != 0)
 	{
 		perror("\033[1;35mFailed lock the fork mutex\033[0m");
 		return ((void *)1);
 	}
-	write(1, "hello2\n", 7);
 	printf("The philo[%d] are saying hello to you.\n", coll->ph.philo_id);
 	pthread_mutex_unlock(&(coll->fork[0]));
 	return ((void *)0);
-}
-
-void	free_memory(t_coll *coll)
-{
-	free(coll->th.philo);
-	coll->th.philo = NULL;
-	free(coll->fork);
-	coll->fork = NULL;
 }
 
 int	philo_threads(t_coll *coll)
@@ -113,7 +45,6 @@ int	philo_threads(t_coll *coll)
 				philos_routine, (void *)coll) != 0)
 		{
 			write_stderr("philo thread creation failed.\n");
-			// return (free_memory(&(coll->th)), -2);
 			return (-2);
 		}
 		// if (pthread_create(&(coll->th.philo[i]), NULL, testfunc, NULL) != 0)
@@ -124,28 +55,10 @@ int	philo_threads(t_coll *coll)
 		if (pthread_detach(coll->th.philo[i]) != 0)
 		{
 			write_stderr("philo thread detach failed.\n");
-			// return (free_memory(&coll->th), -2);
 			return(-2);
 		}
 		i++;
 	}
-	return (0);
-}
-
-int	one_philo(long start_t,long die_t)
-{
-	long	current_t;
-
-	current_t = get_current_time();
-	if (current_t < 0)
-		return (-1);
-	print_message(current_t - start_t, 1, FORK);
-	my_usleep(die_t);
-	usleep(1000);
-	current_t = get_current_time();
-	if (current_t < 0)
-		return (-1);
-	print_message(current_t - start_t, 1, DIE);
 	return (0);
 }
 
@@ -239,14 +152,12 @@ int	main(int argc, char **argv)
 		return (1);
 	write(1, "passed1\n", 8);
 	if (create_mutexes(&coll) < 0)
-		return(1);
-	// return(free_memory(&coll.th), 1);
+		return (free_memory(&coll), 1);
 	write(1, "passed2\n", 8);
 	if (!coll.fork)
 		printf("\033[1,33mthe coll fork NULL before print_thread\n\033m");
 	if (print_thread(&coll) < 0)
-		return (1);
-	// return (free_memory(&coll.th), 1);
+		return (free_memory(&coll), 1);
 	write(1, "passed3\n", 8);
 	if (pthread_join(coll.th.monitor, NULL) != 0)
 	{

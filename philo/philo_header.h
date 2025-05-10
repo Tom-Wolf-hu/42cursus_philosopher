@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/10 16:33:14 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/10 18:25:54 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,20 @@ typedef	struct s_coll
 	pthread_mutex_t	*fork;
 }	t_coll;
 
+//philo_message.c
+int		one_philo(long start_t,long die_t);
+void	print_message(long time_ms, int philo_num, t_state message);
 
 //philo_utils.c
 int		ft_strlen_p(char *str);
 void	write_stderr(char *str);
 int		ft_isspace(char ch);
 int		ft_isdigit(char ch);
+void	free_memory(t_coll *coll);
+
+//philo_time.c
+long	get_current_time(void);
+long	my_usleep(long sleep_time_ms);
 
 //philo_check_input.c
 int		check_input(int argc, char **argv, t_input *in_args);
