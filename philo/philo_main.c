@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/10 18:27:38 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/10 20:17:21 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,15 @@ void	*philos_routine(void *arg)
 	t_coll	*coll;
 
 	coll = (t_coll *)arg;
-	if (!coll->fork || pthread_mutex_lock(&(coll->fork[0])) != 0)
-	{
-		perror("\033[1;35mFailed lock the fork mutex\033[0m");
-		return ((void *)1);
-	}
+	// if (!coll->fork || pthread_mutex_lock(&(coll->fork[0])) != 0)
+	// {
+	// 	perror("\033[1;35mFailed lock the fork mutex\033[0m");
+	// 	return ((void *)1);
+	// }
+	// pthread_mutex_lock(&coll->control);
 	printf("The philo[%d] are saying hello to you.\n", coll->ph.philo_id);
-	pthread_mutex_unlock(&(coll->fork[0]));
+	// pthread_mutex_unlock(&(coll->fork[0]));
+	// pthread_mutex_unlock(&coll->control);
 	return ((void *)0);
 }
 
@@ -40,7 +42,10 @@ int	philo_threads(t_coll *coll)
 	}
 	while (i < coll->in.philo_num)
 	{
+		pthread_mutex_lock(&coll->control);
 		coll->ph.philo_id = i + 1;
+		fprintf(stderr, "The philo_num: %d in philo_threads function.\n", coll->ph.philo_id);
+		pthread_mutex_unlock(&coll->control);
 		if (pthread_create(&(coll->th.philo[i]), NULL,
 				philos_routine, (void *)coll) != 0)
 		{
@@ -108,33 +113,68 @@ int	print_thread(t_coll *coll)
 	return (0);
 }
 
-// int	create_mutexes(t_thread *th, int fork);
+// int	create_fork_mutexes(t_coll *coll)
+// {
+// 	int	i;
 
-int	create_mutexes(t_coll *coll)
+// 	i = 0;
+// 	// coll->th.philo = NULL;
+// 	coll->fork = malloc(coll->in.philo_num * sizeof(pthread_mutex_t));
+// 	if (!coll->fork)
+// 	{
+// 		write_stderr("Failed allocate memory for fork.\n");
+// 		return (-1);
+// 	}
+// 	while (i < coll->in.philo_num)
+// 	{
+// 		if (pthread_mutex_init(&coll->fork[i], NULL) != 0)
+// 		{
+// 			write_stderr("Failed to initialize the fork mutex.\n");
+// 			while (i >= 0)
+// 			{
+// 				pthread_mutex_destroy(&coll->fork[i]);
+// 				i--;
+// 			}
+// 			return (-2);
+// 		}
+// 		i++;
+// 	}
+// 	return (0);
+// }
+
+int	create_fork_mutexes(t_coll *coll)
 {
-	int	i;
+    int	i;
 
-	i = 0;
-	coll->th.philo = NULL;
-	coll->fork = malloc(coll->in.philo_num * sizeof(t_thread));
-	if (!coll->fork)
+    i = 0;
+    coll->fork = malloc(coll->in.philo_num * sizeof(pthread_mutex_t));
+    if (!coll->fork)
+    {
+        write_stderr("Failed to allocate memory for fork mutexes.\n");
+        return (-1);
+    }
+    while (i < coll->in.philo_num)
+    {
+        if (pthread_mutex_init(&coll->fork[i], NULL) != 0)
+        {
+            write_stderr("Failed to initialize a fork mutex.\n");
+            while (--i >= 0) // Destroy only initialized mutexes
+                pthread_mutex_destroy(&coll->fork[i]);
+            free(coll->fork);
+            coll->fork = NULL;
+            return (-2);
+        }
+        i++;
+    }
+    return (0);
+}
+
+int	create_control_mutex(t_coll *coll)
+{
+	if (pthread_mutex_init(&coll->control, NULL) != 0)
 	{
-		write_stderr("Failed allocate memory for fork.\n");
+		write_stderr("The control mutex initialization failed.\n");
 		return (-1);
-	}
-	while (i < coll->in.philo_num)
-	{
-		if (pthread_mutex_init(&coll->fork[i], NULL) != 0)
-		{
-			write_stderr("Failed to initialize the fork mutex.\n");
-			while (i >= 0)
-			{
-				pthread_mutex_destroy(&coll->fork[i]);
-				i--;
-			}
-			return (-2);
-		}
-		i++;
 	}
 	return (0);
 }
@@ -142,16 +182,18 @@ int	create_mutexes(t_coll *coll)
 int	main(int argc, char **argv)
 {
 	t_coll	coll;
-	long	time_in_ms1;
-	long	time_in_ms2;
-	long	time_in_ms3;
+	// long	time_in_ms1;
+	// long	time_in_ms2;
+	// long	time_in_ms3;
 
 	// pthread_create(&id, NULL, testfunc, NULL);
 	write(1, "passed0\n", 8);
 	if (!check_input(argc, argv, &coll.in))
 		return (1);
 	write(1, "passed1\n", 8);
-	if (create_mutexes(&coll) < 0)
+	if (create_control_mutex(&coll) < 0)
+		return (1);
+	if (create_fork_mutexes(&coll) < 0)
 		return (free_memory(&coll), 1);
 	write(1, "passed2\n", 8);
 	if (!coll.fork)
@@ -165,17 +207,17 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	write(1, "passed4\n", 8);
-	time_in_ms1 = get_current_time();
-	printf("This is the store input: %d\n", coll.in.die_t);
-	printf("The 0.current time is: %ld\n", time_in_ms1);
-	my_usleep(20);
-	time_in_ms2 = get_current_time();
-	printf("The 1.current time is: %ld\n", time_in_ms2);
-	printf("The elapsed time is: %ld\n", time_in_ms2 - time_in_ms1);
-	my_usleep(60);
-	time_in_ms3 = get_current_time();
-	printf("The 2.current time is: %ld\n", time_in_ms3);
-	printf("The elapsed time is: %ld\n", time_in_ms3 - time_in_ms1);
+	// time_in_ms1 = get_current_time();
+	// printf("This is the store input: %d\n", coll.in.die_t);
+	// printf("The 0.current time is: %ld\n", time_in_ms1);
+	// my_usleep(20);
+	// time_in_ms2 = get_current_time();
+	// printf("The 1.current time is: %ld\n", time_in_ms2);
+	// printf("The elapsed time is: %ld\n", time_in_ms2 - time_in_ms1);
+	// my_usleep(60);
+	// time_in_ms3 = get_current_time();
+	// printf("The 2.current time is: %ld\n", time_in_ms3);
+	// printf("The elapsed time is: %ld\n", time_in_ms3 - time_in_ms1);
 	free_memory(&coll);
 	return (0);
 }

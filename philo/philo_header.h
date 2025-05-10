@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/10 18:25:54 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/10 18:56:07 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef	struct s_coll
 	t_input			in;
 	t_thread		th;
 	t_philo			ph;
+	pthread_mutex_t	control;
 	pthread_mutex_t	*fork;
 }	t_coll;
 
