@@ -187,7 +187,7 @@ int	main(int argc, char **argv)
 	// long	time_in_ms3;
 
 	// pthread_create(&id, NULL, testfunc, NULL);
-	write(1, "passed0\n", 8);
+	//write(1, "passed0\n", 8);
 	if (!check_input(argc, argv, &coll.in))
 		return (1);
 	write(1, "passed1\n", 8);

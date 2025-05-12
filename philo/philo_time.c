@@ -12,6 +12,22 @@
 
 #include "philo_header.h"
 
+#ifdef _WIN32
+#include <windows.h>
+
+double	get_time_in_ms(void)
+{
+	static	LARGE_INTEGER	frequency;
+	static	BOOL			use_qpc;
+	LARGE_INTEGER			now;
+
+	use_qpc = QueryPerformanceFrequency(&frequency);
+	QueryPerformanceCounter(&now);
+	return ((1000.0 * now.QuadPart) / frequency.QuadPart);
+}
+#else
+#include	<sys/time.h>
+
 long	get_current_time(void)
 {
 	struct timeval	current;
@@ -25,6 +41,8 @@ long	get_current_time(void)
 	time_in_ms = (current.tv_sec * 1000) + (current.tv_usec / 1000);
 	return (time_in_ms);
 }
+
+#endif
 
 long	my_usleep(long sleep_time_ms)
 {

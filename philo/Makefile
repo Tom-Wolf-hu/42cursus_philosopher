@@ -11,7 +11,7 @@ SRC =	philo_main.c \
 OBJ_DIR = obj
 OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)
 
-CC = cc
+CC = gcc
 HEADER = -I.
 CFLAGS = -Wall -Wextra -Werror -pthread -g
 RM = rm -f
