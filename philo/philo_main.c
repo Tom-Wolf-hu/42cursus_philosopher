@@ -105,9 +105,11 @@ int	print_thread(t_coll *coll)
 	if (philo_threads(coll) < 0)
 		return (-2);
 	coll->th.start_t = get_current_time();
+	printf("The current time in print_thread function: %ld.\n", coll->th.start_t);
 	if (coll->th.start_t < 0)
 	{
-		write_stderr("Failed to get the start_time");
+		printf("The current time in print_thread function if statement: %ld.\n", coll->th.start_t);
+		write_stderr("Failed to get the start_time.\n");
 		return (-3);
 	}
 	return (0);

@@ -12,6 +12,7 @@ OBJ_DIR = obj
 OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)
 
 CC = gcc
+#CC = cc
 HEADER = -I.
 CFLAGS = -Wall -Wextra -Werror -pthread -g
 RM = rm -f
