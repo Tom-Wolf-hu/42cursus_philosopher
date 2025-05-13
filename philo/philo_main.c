@@ -201,7 +201,10 @@ int	main(int argc, char **argv)
 	if (!coll.fork)
 		printf("\033[1,33mthe coll fork NULL before print_thread\n\033m");
 	if (print_thread(&coll) < 0)
+	{
+		write_stderr("\033[1;33mProblem occur!\n\033[0m");
 		return (free_memory(&coll), 1);
+	}
 	write(1, "passed3\n", 8);
 	if (pthread_join(coll.th.monitor, NULL) != 0)
 	{
