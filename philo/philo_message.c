@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_message.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:17:24 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/10 18:27:45 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/15 00:02:36 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	print_message(long time_ms, int philo_num, t_state message)
 	else if (message == THINK)
 		printf("%ld %d is thinking\n", time_ms, philo_num);
 	else if (message == DIE)
-		printf("\033[1;31m%ld %d is died\033[0m\n", time_ms, philo_num);
+		printf("\033[1;31m%ld %d died\033[0m\n", time_ms, philo_num);
 }
 
 void	*testfunc(void *arg)

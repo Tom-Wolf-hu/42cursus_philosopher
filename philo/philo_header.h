@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_header.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/10 18:56:07 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/15 00:02:25 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ typedef struct s_philo
 	int		philo_id;
 	long	eat_start_t;
 	int		num_fork;
+	int		meal_count;
+	int		smb_died;
 	t_state	st;
 }	t_philo;
 
