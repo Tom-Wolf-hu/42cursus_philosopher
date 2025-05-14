@@ -21,7 +21,7 @@ int	one_philo(long start_t,long die_t)
 		return (-1);
 	print_message(current_t - start_t, 1, FORK);
 	my_usleep(die_t);
-	usleep(1000);
+	//usleep(1000);
 	current_t = get_current_time();
 	if (current_t < 0)
 		return (-1);

@@ -179,12 +179,28 @@ int	create_control_mutex(t_coll *coll)
 	return (0);
 }
 
+void	main_thread_print(t_coll *coll)
+{
+	long	time_in_ms1;
+	long	time_in_ms2;
+	long	time_in_ms3;
+	
+	time_in_ms1 = get_current_time();
+	printf("This is the store input: %d\n", coll->in.die_t);
+	printf("The 0.current time is: %ld\n", time_in_ms1);
+	my_usleep(20);
+	time_in_ms2 = get_current_time();
+	printf("The 1.current time is: %ld\n", time_in_ms2);
+	printf("The elapsed time is: %ld\n", time_in_ms2 - time_in_ms1);
+	my_usleep(60);
+	time_in_ms3 = get_current_time();
+	printf("The 2.current time is: %ld\n", time_in_ms3);
+	printf("The elapsed time is: %ld\n", time_in_ms3 - time_in_ms1);
+}
+
 int	main(int argc, char **argv)
 {
 	t_coll	coll;
-	// long	time_in_ms1;
-	// long	time_in_ms2;
-	// long	time_in_ms3;
 
 	// pthread_create(&id, NULL, testfunc, NULL);
 	write(1, "passed0\n", 8);
@@ -207,17 +223,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	write(1, "passed4\n", 8);
-	// time_in_ms1 = get_current_time();
-	// printf("This is the store input: %d\n", coll.in.die_t);
-	// printf("The 0.current time is: %ld\n", time_in_ms1);
-	// my_usleep(20);
-	// time_in_ms2 = get_current_time();
-	// printf("The 1.current time is: %ld\n", time_in_ms2);
-	// printf("The elapsed time is: %ld\n", time_in_ms2 - time_in_ms1);
-	// my_usleep(60);
-	// time_in_ms3 = get_current_time();
-	// printf("The 2.current time is: %ld\n", time_in_ms3);
-	// printf("The elapsed time is: %ld\n", time_in_ms3 - time_in_ms1);
+	main_thread_print(&coll);
 	free_memory(&coll);
 	return (0);
 }
