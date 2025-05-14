@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/10 20:17:21 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/15 01:06:17 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	*print_monitor(void *arg)
 {
 	t_coll	*coll;
 	int		i;
-	long	sim_start_t;
+	//long	sim_start_t;
 
 	i = 0;
 	coll = (t_coll *)arg;
@@ -80,9 +80,9 @@ void	*print_monitor(void *arg)
 		usleep(10);
 		continue ;
 	}
-	sim_start_t = get_current_time();
-	if (sim_start_t < 0)
-		return ((void * )(-1));
+	//sim_start_t = get_current_time();
+	//if (sim_start_t < 0)
+		//return ((void * )(-1));
 	while (i < coll->in.philo_num)
 	{
 		print_message(get_current_time() - coll->th.start_t, i + 1, THINK);
@@ -90,7 +90,9 @@ void	*print_monitor(void *arg)
 	}
 	if (coll->in.philo_num == 1)
 		one_philo(coll->th.start_t, (long)coll->in.die_t);
-	return(NULL);
+	else
+		more_philo(coll);
+	return((void *)0);
 }
 
 int	print_thread(t_coll *coll)

@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:11:33 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/15 00:02:33 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/15 00:26:19 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int sleep_func(t_philo *ph, long sleep_t)
 
 int eat_func(t_philo *ph, long eat_t, int eat_num)
 {
-    ph->start_t = get_current_time();
-    if (ph->start_t == -1)
+    ph->eat_start_t = get_current_time();
+    if (ph->eat_start_t == -1)
         return (-1);
     ph->st = EAT;
     if (my_usleep(eat_t) == -1)
@@ -39,3 +39,9 @@ int eat_func(t_philo *ph, long eat_t, int eat_num)
     return (0);
 }
 
+void    died_func(t_philo *ph, long die_time, long start_t)
+{
+    ph->smb_died = 1;
+    ph->st = DIE;
+    print_message(die_time - start_t, ph->philo_id, ph->st);
+}
