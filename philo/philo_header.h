@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/15 00:02:25 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/15 15:50:09 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,10 @@ int		check_input(int argc, char **argv, t_input *in_args);
 
 //philo_store.c
 void	store_input(int input_num, t_input *in_args);
+
+//philo_action.c
+int 	sleep_func(t_philo *ph, long sleep_t);
+int		eat_func(t_philo *ph, long eat_t, int eat_num);
+void    died_func(t_philo *ph, long die_time, long start_t);
 
 #endif
