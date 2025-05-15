@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:17:24 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/15 00:02:36 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/15 12:50:44 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@ int	one_philo(long start_t,long die_t)
 	current_t = get_current_time();
 	if (current_t < 0)
 		return (-1);
+	while (current_t - start_t <= die_t)
+	{
+		current_t = get_current_time();
+		if (current_t < 0)
+			return (-1);
+	}
 	print_message(current_t - start_t, 1, DIE);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/15 01:06:17 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/15 12:50:00 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,8 @@ void	*print_monitor(void *arg)
 	}
 	if (coll->in.philo_num == 1)
 		one_philo(coll->th.start_t, (long)coll->in.die_t);
-	else
-		more_philo(coll);
+	// else
+	// 	more_philo(coll);
 	return((void *)0);
 }
 
