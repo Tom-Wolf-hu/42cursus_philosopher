@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 20:13:14 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/10 20:18:10 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/16 12:53:25 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,28 +51,6 @@ int	ft_isdigit(char ch)
 		return (1);
 	return (0);
 }
-
-// void	free_memory(t_coll *coll)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	if (pthread_mutex_destroy(&coll->control) != 0)
-// 		write_stderr("Failed to destroy the control mutex.\n");
-// 	while (i < coll->in.philo_num)
-// 	{
-// 		if (pthread_mutex_destroy(&coll->fork[i]) != 0)
-// 			write_stderr("Failed to destroy the fork mutex.\n");
-// 		i++;
-// 	}
-// 	if (coll->th.philo != NULL)
-// 		free(coll->th.philo);
-// 	coll->th.philo = NULL;
-// 	if (coll->fork != NULL)
-// 		free(coll->fork);
-// 	coll->fork = NULL;
-// }
-
 
 void	free_memory(t_coll *coll)
 {

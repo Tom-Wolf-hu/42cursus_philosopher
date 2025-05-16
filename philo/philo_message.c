@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:17:24 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/15 12:50:44 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/16 13:01:23 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,4 @@ void	print_message(long time_ms, int philo_num, t_state message)
 		printf("%ld %d is thinking\n", time_ms, philo_num);
 	else if (message == DIE)
 		printf("\033[1;31m%ld %d died\033[0m\n", time_ms, philo_num);
-}
-
-void	*testfunc(void *arg)
-{
-	(void) arg;
-	print_message(12, 3, FORK);
-	usleep(20000);
-	print_message(12, 4, THINK);
-	usleep(20000);
-	print_message(12, 3, DIE);
-	return (NULL);
 }

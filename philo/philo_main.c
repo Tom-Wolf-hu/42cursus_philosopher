@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/15 12:50:00 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/16 12:59:57 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void	*print_monitor(void *arg)
 {
 	t_coll	*coll;
 	int		i;
-	//long	sim_start_t;
 
 	i = 0;
 	coll = (t_coll *)arg;
@@ -80,9 +79,6 @@ void	*print_monitor(void *arg)
 		usleep(10);
 		continue ;
 	}
-	//sim_start_t = get_current_time();
-	//if (sim_start_t < 0)
-		//return ((void * )(-1));
 	while (i < coll->in.philo_num)
 	{
 		print_message(get_current_time() - coll->th.start_t, i + 1, THINK);
@@ -115,35 +111,6 @@ int	print_thread(t_coll *coll)
 	return (0);
 }
 
-// int	create_fork_mutexes(t_coll *coll)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	// coll->th.philo = NULL;
-// 	coll->fork = malloc(coll->in.philo_num * sizeof(pthread_mutex_t));
-// 	if (!coll->fork)
-// 	{
-// 		write_stderr("Failed allocate memory for fork.\n");
-// 		return (-1);
-// 	}
-// 	while (i < coll->in.philo_num)
-// 	{
-// 		if (pthread_mutex_init(&coll->fork[i], NULL) != 0)
-// 		{
-// 			write_stderr("Failed to initialize the fork mutex.\n");
-// 			while (i >= 0)
-// 			{
-// 				pthread_mutex_destroy(&coll->fork[i]);
-// 				i--;
-// 			}
-// 			return (-2);
-// 		}
-// 		i++;
-// 	}
-// 	return (0);
-// }
-
 int	create_fork_mutexes(t_coll *coll)
 {
     int	i;
@@ -160,7 +127,7 @@ int	create_fork_mutexes(t_coll *coll)
         if (pthread_mutex_init(&coll->fork[i], NULL) != 0)
         {
             write_stderr("Failed to initialize a fork mutex.\n");
-            while (--i >= 0) // Destroy only initialized mutexes
+            while (--i >= 0)
                 pthread_mutex_destroy(&coll->fork[i]);
             free(coll->fork);
             coll->fork = NULL;
@@ -179,25 +146,6 @@ int	create_control_mutex(t_coll *coll)
 		return (-1);
 	}
 	return (0);
-}
-
-void	main_thread_print(t_coll *coll)
-{
-	long	time_in_ms1;
-	long	time_in_ms2;
-	long	time_in_ms3;
-	
-	time_in_ms1 = get_current_time();
-	printf("This is the store input: %d\n", coll->in.die_t);
-	printf("The 0.current time is: %ld\n", time_in_ms1);
-	my_usleep(20);
-	time_in_ms2 = get_current_time();
-	printf("The 1.current time is: %ld\n", time_in_ms2);
-	printf("The elapsed time is: %ld\n", time_in_ms2 - time_in_ms1);
-	my_usleep(60);
-	time_in_ms3 = get_current_time();
-	printf("The 2.current time is: %ld\n", time_in_ms3);
-	printf("The elapsed time is: %ld\n", time_in_ms3 - time_in_ms1);
 }
 
 int	main(int argc, char **argv)
