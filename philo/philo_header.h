@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/16 13:01:27 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/16 13:34:45 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct s_input
 	int	eat_num;
 }	t_input;
 
-//This structure consists dynamically allocated memory: philo, fork
+//This structure consists dynamically allocated memory: philo
 typedef struct s_thread
 {
 	long			start_t;
@@ -56,11 +56,12 @@ typedef struct s_philo
 	t_state	st;
 }	t_philo;
 
+//This structure consists dynamically allocated memory: fork, ph
 typedef	struct s_coll
 {
 	t_input			in;
 	t_thread		th;
-	t_philo			ph;
+	t_philo			**ph;
 	pthread_mutex_t	control;
 	pthread_mutex_t	*fork;
 }	t_coll;
@@ -85,6 +86,7 @@ int		check_input(int argc, char **argv, t_input *in_args);
 
 //philo_store.c
 void	store_input(int input_num, t_input *in_args);
+int		coll_init(t_coll *coll);
 
 //philo_action.c
 int 	sleep_func(t_philo *ph, long sleep_t);

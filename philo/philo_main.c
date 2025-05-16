@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/16 12:59:57 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/16 13:37:38 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,8 @@ int	main(int argc, char **argv)
 	if (!check_input(argc, argv, &coll.in))
 		return (1);
 	write(1, "passed1\n", 8);
+	if (!coll_init(&coll))
+		return (1);
 	if (create_control_mutex(&coll) < 0)
 		return (1);
 	if (create_fork_mutexes(&coll) < 0)

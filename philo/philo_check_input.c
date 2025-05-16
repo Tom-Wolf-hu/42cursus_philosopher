@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 20:18:06 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/16 12:53:19 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/16 14:15:50 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,9 @@ static void	ch_argv_msg(int err_status)
 	else if (err_status == -4)
 		write_stderr("\033[1;31mThe input should be less than"
 			" int MAX = 2147483647.\033[0m\n");
+	else if (err_status == -5)
+		write_stderr("\033[1;31mThe number of philosophers"
+			" shouldn't be bigger than 200.\033[0m\n");
 }
 
 static int	check_argval(int argc, char **argv, t_input *in_args)
@@ -77,6 +80,8 @@ static int	check_argval(int argc, char **argv, t_input *in_args)
 		input_num = ft_atoi_p(argv[i]);
 		if (input_num < 0)
 			return (input_num);
+		if (i == 1 && input_num >= 200)
+			return (-5);
 		store_input(input_num, in_args);
 		i++;
 	}
