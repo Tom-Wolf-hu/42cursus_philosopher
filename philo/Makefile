@@ -8,7 +8,8 @@ SRC =	philo_main.c \
 		philo_time.c \
 		philo_utils.c \
 		philo_action.c \
-		philo_more_philo.c
+		philo_more_philo.c \
+		test_funcs.c
 
 OBJ_DIR = obj
 OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)

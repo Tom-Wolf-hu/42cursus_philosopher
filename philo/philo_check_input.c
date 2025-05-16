@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 20:18:06 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/16 14:15:50 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/16 14:23:19 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static int	check_argval(int argc, char **argv, t_input *in_args)
 		input_num = ft_atoi_p(argv[i]);
 		if (input_num < 0)
 			return (input_num);
-		if (i == 1 && input_num >= 200)
+		if (i == 1 && input_num > 200)
 			return (-5);
 		store_input(input_num, in_args);
 		i++;

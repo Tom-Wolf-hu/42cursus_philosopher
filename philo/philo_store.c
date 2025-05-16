@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:14:37 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/16 14:13:19 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/16 14:30:16 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int	coll_init(t_coll *coll)
 			while(--i >= 0)
 				free(coll->ph[i]);
 			free(coll->ph);
+			coll->ph = NULL;
 			return (0);
 		}
 		coll->ph[i]->philo_id = i + 1;

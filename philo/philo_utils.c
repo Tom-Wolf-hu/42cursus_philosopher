@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 20:13:14 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/16 12:53:25 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/16 14:32:45 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,18 @@ void	free_memory(t_coll *coll)
 		}
 		free(coll->fork);
 		coll->fork = NULL;
+	}
+
+	i = 0;
+	if (coll->ph)
+	{
+		while (i < coll->in.philo_num)
+		{
+			free(coll->ph[i]);
+			i++;
+		}
+		free(coll->ph);
+		coll->ph = NULL;
 	}
 
 	// Free philosopher threads if allocated
