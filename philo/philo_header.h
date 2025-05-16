@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/15 15:50:09 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/16 12:09:13 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_philo
 {
 	int		philo_id;
 	long	eat_start_t;
+	int		state_changed;
 	int		num_fork;
 	int		meal_count;
 	int		smb_died;
@@ -89,5 +90,8 @@ void	store_input(int input_num, t_input *in_args);
 int 	sleep_func(t_philo *ph, long sleep_t);
 int		eat_func(t_philo *ph, long eat_t, int eat_num);
 void    died_func(t_philo *ph, long die_time, long start_t);
+
+//philo_more_philo.c
+int		more_philo(t_coll *coll);
 
 #endif
