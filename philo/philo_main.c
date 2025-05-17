@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/17 11:09:27 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 18:01:39 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 void	*philos_routine(void *arg)
 {
-	t_coll	*coll;
+	t_philo	*ph;
 
-	coll = (t_coll *)arg;
+	ph = (t_philo *)arg;
 	// if (!coll->fork || pthread_mutex_lock(&(coll->fork[0])) != 0)
 	// {
 	// 	perror("\033[1;35mFailed lock the fork mutex\033[0m");
 	// 	return ((void *)1);
 	// }
 	// pthread_mutex_lock(&coll->control);
-	printf("The philo[%d] are saying hello to you.\n", coll->ph.philo_id);
+	printf("The philo[%d] are saying hello to you.\n", ph->philo_id);
 	// pthread_mutex_unlock(&(coll->fork[0]));
 	// pthread_mutex_unlock(&coll->control);
 	return ((void *)0);
@@ -43,7 +43,7 @@ int	philo_threads(t_coll *coll)
 	while (i < coll->in.philo_num)
 	{
 		if (pthread_create(&(coll->th.philo[i]), NULL,
-				philos_routine, (void *)coll) != 0)
+				philos_routine, (void *)coll->ph[i]) != 0)
 		{
 			write_stderr("philo thread creation failed.\n");
 			return (-2);
@@ -53,12 +53,7 @@ int	philo_threads(t_coll *coll)
 		// 	write_stderr("philo thread creation failed.\n");
 		// 	return (free_memory(&coll->th), -2);
 		// }
-		// if (pthread_detach(coll->th.philo[i]) != 0)
-		// {
-		// 	write_stderr("philo thread detach failed.\n");
-		// 	return(-2);
-		// }
-		// i++;
+		i++;
 	}
 	return (0);
 }
@@ -89,8 +84,6 @@ void	*print_monitor(void *arg)
 
 int	print_thread(t_coll *coll)
 {
-	coll->th.start_t = -1;
-	coll->ph.eat_start_t = -1;
 	if (pthread_create(&(coll->th.monitor), NULL, print_monitor, (void *)coll) != 0)
 	{
 		write_stderr("monitor thread creation failed.\n");
@@ -133,6 +126,8 @@ int	main(int argc, char **argv)
 		write_stderr("Failed to join the monitor thread.\n");
 		return (1);
 	}
+	if (!join_philo_threads(&coll.th, coll.in.philo_num))
+		return (1);
 	write(1, "passed4\n", 8);
 	main_thread_print(&coll);
 	free_memory(&coll);

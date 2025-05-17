@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:43:37 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/17 10:36:06 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 18:39:29 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ static int	check_meal_count(t_coll *coll, int *eat_enough)
 	i = 0;
 	while (i < coll->in.philo_num)
 	{
-		if (coll->ph[i].meal_count == coll->in.eat_num)
+		if (coll->ph[i]->meal_count == coll->in.eat_num)
 			count++;
 		i++;
 	}
 	if (count == coll->in.philo_num)
 	{
-		*eat_enough = 1;
+		coll->th.sim_end = 1;
 		printf("\033[1;32mAll philosophers eat at"
 			" least %d times.\033[0m\n", coll->in.philo_num);
 		return (1);
@@ -37,19 +37,21 @@ static int	check_meal_count(t_coll *coll, int *eat_enough)
 
 static int	check_die(t_coll *coll, long curren_t, int i)
 {
-	if (coll->ph[i].eat_start_t == -1)
+	if (coll->ph[i]->eat_start_t == -1)
 	{
 		if (curren_t - coll->th.start_t > coll->in.die_t)
 		{
-			died_func(coll->ph, (long)coll->in.die_t, coll->th.start_t);
+			coll->th.sim_end = 1;
+			print_message(curren_t - coll->th.start_t, coll->ph[i]->philo_id, DIE);
 			return (1);
 		}
 	}
 	else
 	{
-		if (curren_t - coll->ph[i].eat_start_t > coll->in.die_t)
+		if (curren_t - coll->ph[i]->eat_start_t > coll->in.die_t)
 		{
-			died_func(coll->ph, (long)coll->in.die_t, coll->ph[i].eat_start_t);
+			coll->th.sim_end = 1;
+			print_message(curren_t - coll->ph[i]->eat_start_t, coll->ph[i]->philo_id, DIE);
 			return (1);
 		}
 	}
@@ -101,7 +103,7 @@ int	more_philo(t_coll *coll_orig)
 	t_coll	*coll;
 	
 	every_body_eat_enough = 0;
-	while(!coll->ph.smb_died && !every_body_eat_enough)
+	while(!coll->ph.sim_end && !every_body_eat_enough)
 	{
 		if (pthread_mutex_lock(&coll_orig->control) != 0)
 		{

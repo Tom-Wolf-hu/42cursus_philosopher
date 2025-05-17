@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:14:37 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/17 10:53:22 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 18:13:31 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ int	coll_init(t_coll *coll)
 	i = 0;
 	coll->th.philo = NULL;
 	coll->th.start_t = -1;
+	coll->th.sim_end = 0;
 	coll->fork = NULL;
 	coll->ph = (t_philo **)malloc(coll->in.philo_num * sizeof(t_philo *));
 	if (!coll->ph)
@@ -86,7 +87,7 @@ int	coll_init(t_coll *coll)
 		coll->ph[i] = (t_philo *)malloc(sizeof(t_philo));
 		if (!coll->ph[i])
 		{
-			write_stderr("Failed allocate memory for idividual philo.\n");
+			write_stderr("Failed allocate memory for individual philo.\n");
 			while(--i >= 0)
 				free(coll->ph[i]);
 			free(coll->ph);
@@ -98,7 +99,7 @@ int	coll_init(t_coll *coll)
 		coll->ph[i]->state_changed = 0;
 		coll->ph[i]->num_fork = 0;
 		coll->ph[i]->meal_count = 0;
-		coll->ph[i]->smb_died = 0;
+		coll->ph[i]->sim_end = &coll->th.sim_end;
 		i++;
 	}
 	return (1);

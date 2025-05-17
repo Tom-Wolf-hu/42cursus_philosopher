@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:11:33 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/15 13:00:02 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 18:40:05 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,4 @@ int eat_func(t_philo *ph, long eat_t, int eat_num)
     if (eat_num != -1)
         ph->meal_count++;
     return (0);
-}
-
-void    died_func(t_philo *ph, long die_time, long start_t)
-{
-    ph->smb_died = 1;
-    ph->st = DIE;
-    print_message(die_time - start_t, ph->philo_id, ph->st);
 }
