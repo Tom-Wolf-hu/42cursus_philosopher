@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/16 13:34:45 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 10:05:44 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int		eat_func(t_philo *ph, long eat_t, int eat_num);
 void    died_func(t_philo *ph, long die_time, long start_t);
 
 //philo_more_philo.c
-int		more_philo(t_coll *coll);
+int		more_philo(t_coll *coll_orig);
 
 /*
 	The following test_func.c file consist functions which helped during

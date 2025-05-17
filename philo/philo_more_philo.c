@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_routine.c                                    :+:      :+:    :+:   */
+/*   philo_more_philo.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:43:37 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/16 12:03:51 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 10:36:06 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,18 +95,41 @@ static int	check_die_and_state(t_coll *coll)
 	return (0);
 }
 
-int	more_philo(t_coll *coll)
+int	more_philo(t_coll *coll_orig)
 {
-	int	every_body_eat_enough;
+	int		every_body_eat_enough;
+	t_coll	*coll;
 	
 	every_body_eat_enough = 0;
 	while(!coll->ph.smb_died && !every_body_eat_enough)
 	{
+		if (pthread_mutex_lock(&coll_orig->control) != 0)
+		{
+			write_stderr("Failed to lock control mutex in more_philo.\n");
+			return (1);
+		}
+		coll = coll_orig;
+		if (pthread_mutex_unlock(&coll_orig->control) != 0)
+		{
+			write_stderr("Failed to unlock control mutex in more_philo.\n");
+			return (1);
+		}
 		if (check_die_and_state(coll))
 			return (1);
 		if (coll->in.eat_num != -1 && coll->ph.meal_count == coll->in.eat_num)
 			if (check_meal_count(coll, &eat_enough))
 				return (1);
+		if (pthread_mutex_lock(&coll_orig->control) != 0)
+		{
+			write_stderr("Failed to lock control mutex in more_philo.\n");
+			return (1);
+		}
+		coll_orig-> = coll_orig;
+		if (pthread_mutex_unlock(&coll_orig->control) != 0)
+		{
+			write_stderr("Failed to unlock control mutex in more_philo.\n");
+			return (1);
+		}
 		usleep(200);
 	}
 	return (0);

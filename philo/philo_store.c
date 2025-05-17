@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:14:37 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/16 14:30:16 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 10:36:09 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int	coll_init(t_coll *coll)
 	i = 0;
 	coll->th.philo = NULL;
 	coll->th.start_t = -1;
+	coll->fork = NULL;
 	coll->ph = (t_philo **)malloc(coll->in.philo_num * sizeof(t_philo *));
 	if (!coll->ph)
 	{
