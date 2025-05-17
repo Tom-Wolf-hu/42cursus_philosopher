@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/17 18:01:39 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 22:49:26 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,89 @@ void	*philos_routine(void *arg)
 	t_philo	*ph;
 
 	ph = (t_philo *)arg;
-	// if (!coll->fork || pthread_mutex_lock(&(coll->fork[0])) != 0)
-	// {
-	// 	perror("\033[1;35mFailed lock the fork mutex\033[0m");
-	// 	return ((void *)1);
-	// }
-	// pthread_mutex_lock(&coll->control);
-	printf("The philo[%d] are saying hello to you.\n", ph->philo_id);
-	// pthread_mutex_unlock(&(coll->fork[0]));
-	// pthread_mutex_unlock(&coll->control);
+	if (ph->philo_id % 2 == 1)
+		usleep(100);
+	if (pthread_mutex_lock(ph->finish) != 0)
+	{
+		write_stderr("Failed to lock finish mutex in more_philo.\n");
+		return ((void *)1);
+	}
+	while (!(*(ph->sim_end)))
+	{
+		if (pthread_mutex_unlock(ph->finish) != 0)
+		{
+			write_stderr("Failed to unlock finish mutex in more_philo.\n");
+			return ((void *)1);
+		}
+		if (ph->philo_id % 2 == 1)
+		{
+			if (pthread_mutex_lock(ph->left_fork) != 0)
+			{
+				write_stderr("Failed to lock the left fork.\n");
+				return ((void *)1);
+			}
+			ph->st = FORK;
+			ph->state_changed = 1;
+			if (pthread_mutex_lock(ph->right_fork) != 0)
+			{
+				write_stderr("Failed to lock the right fork.\n");
+				return ((void *)1);
+			}
+		}
+		else
+		{
+			if (pthread_mutex_lock(ph->right_fork) != 0)
+			{
+				write_stderr("Failed to lock the left fork.\n");
+				return ((void *)1);
+			}
+			ph->st = FORK;
+			ph->state_changed = 1;
+			if (pthread_mutex_lock(ph->left_fork) != 0)
+			{
+				write_stderr("Failed to lock the right fork.\n");
+				return ((void *)1);
+			}
+		}
+		if (eat_func(ph) < 0)
+			return ((void *)2);
+		printf("The philo[%d] are saying hello to you.\n", ph->philo_id);
+		if (ph->philo_id % 2 == 1)
+		{
+			if (pthread_mutex_unlock(ph->left_fork) != 0)
+			{
+				write_stderr("Failed to unlock the left fork.\n");
+				return ((void *)1);
+			}
+			if (pthread_mutex_unlock(ph->right_fork) != 0)
+			{
+				write_stderr("Failed to unlock the right fork.\n");
+				return ((void *)1);
+			}
+		}
+		else
+		{
+			if (pthread_mutex_unlock(ph->right_fork) != 0)
+			{
+				write_stderr("Failed to unlock the left fork.\n");
+				return ((void *)1);
+			}
+			if (pthread_mutex_unlock(ph->left_fork) != 0)
+			{
+				write_stderr("Failed to unlock the right fork.\n");
+				return ((void *)1);
+			}
+		}
+		if (sleep_func(ph) < 0)
+			return ((void *)3);
+		ph->st = THINK;
+		ph->state_changed = 1;
+		if (pthread_mutex_lock(ph->finish) != 0)
+		{
+			write_stderr("Failed to lock finish mutex in more_philo.\n");
+			return ((void *)1);
+		}
+	}
 	return ((void *)0);
 }
 
@@ -76,7 +150,20 @@ void	*print_monitor(void *arg)
 		i++;
 	}
 	if (coll->in.philo_num == 1)
+	{
 		one_philo(coll->th.start_t, (long)coll->in.die_t);
+		if (pthread_mutex_lock(&coll->finish) != 0)
+		{
+			write_stderr("Failed to lock finish mutex in more_philo.\n");
+			return ((void *)1);
+		}
+		coll->th.sim_end = 1;
+		if (pthread_mutex_unlock(&coll->finish) != 0)
+		{
+			write_stderr("Failed to unlock finish mutex in more_philo.\n");
+			return ((void *)1);
+		}
+	}
 	// else
 	// 	more_philo(coll);
 	return((void *)0);
@@ -111,10 +198,6 @@ int	main(int argc, char **argv)
 	write(1, "passed1\n", 8);
 	if (!coll_init(&coll))
 		return (1);
-	if (create_control_mutex(&coll) < 0)
-		return (1);
-	if (create_fork_mutexes(&coll) < 0)
-		return (free_memory(&coll), 1);
 	write(1, "passed2\n", 8);
 	if (!coll.fork)
 		printf("\033[1,33mthe coll fork NULL before print_thread\n\033m");
@@ -129,7 +212,7 @@ int	main(int argc, char **argv)
 	if (!join_philo_threads(&coll.th, coll.in.philo_num))
 		return (1);
 	write(1, "passed4\n", 8);
-	main_thread_print(&coll);
+	// main_thread_print(&coll);
 	free_memory(&coll);
 	return (0);
 }

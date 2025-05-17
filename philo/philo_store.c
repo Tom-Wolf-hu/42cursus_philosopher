@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:14:37 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/17 18:13:31 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 22:32:09 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,17 @@ int	create_fork_mutexes(t_coll *coll)
     return (0);
 }
 
-int	create_control_mutex(t_coll *coll)
+int	create_control_mutexes(t_coll *coll)
 {
-	if (pthread_mutex_init(&coll->control, NULL) != 0)
+	if (pthread_mutex_init(&coll->finish, NULL) != 0)
 	{
-		write_stderr("The control mutex initialization failed.\n");
+		write_stderr("The finish mutex initialization failed.\n");
 		return (-1);
+	}
+	if (pthread_mutex_init(&coll->modify_state, NULL) != 0)
+	{
+		write_stderr("The modify_state mutex initialization failed.\n");
+		return (-2);
 	}
 	return (0);
 }
@@ -75,7 +80,10 @@ int	coll_init(t_coll *coll)
 	coll->th.philo = NULL;
 	coll->th.start_t = -1;
 	coll->th.sim_end = 0;
-	coll->fork = NULL;
+	if (create_control_mutexes(coll) < 0)
+		return (0);
+	if (create_fork_mutexes(coll) < 0)
+		return (0);
 	coll->ph = (t_philo **)malloc(coll->in.philo_num * sizeof(t_philo *));
 	if (!coll->ph)
 	{
@@ -96,10 +104,21 @@ int	coll_init(t_coll *coll)
 		}
 		coll->ph[i]->philo_id = i + 1;
 		coll->ph[i]->eat_start_t = -1;
+		coll->ph[i]->eat_time = (long)coll->in.eat_t;
+		coll->ph[i]->sleep_time = (long)coll->in.sleep_t;
 		coll->ph[i]->state_changed = 0;
 		coll->ph[i]->num_fork = 0;
 		coll->ph[i]->meal_count = 0;
+		if (coll->in.eat_num == -1)
+			coll->ph[i]->meal_count = -1;
+		if (i == 0)
+			coll->ph[i]->right_fork = &coll->fork[coll->in.philo_num - 1];
+		else
+			coll->ph[i]->right_fork = &coll->fork[i - 1];
+		coll->ph[i]->left_fork = &coll->fork[i];
 		coll->ph[i]->sim_end = &coll->th.sim_end;
+		coll->ph[i]->finish = &coll->finish;
+		coll->ph[i]->modify_state = &coll->modify_state;
 		i++;
 	}
 	return (1);

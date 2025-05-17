@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 10:52:46 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/17 11:05:43 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 22:26:35 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,10 @@ void	free_memory(t_coll *coll)
 	int	i;
 
 	i = 0;
-	// Destroy the control mutex if it was initialized
-	if (coll->in.philo_num > 0 && pthread_mutex_destroy(&coll->control) != 0)
-		write_stderr("Failed to destroy the control mutex.\n");
+	if (coll->in.philo_num > 0 && pthread_mutex_destroy(&coll->finish) != 0)
+		write_stderr("Failed to destroy the finish mutex.\n");
+	if (coll->in.philo_num > 0 && pthread_mutex_destroy(&coll->modify_state) != 0)
+		write_stderr("Failed to destroy the modify_state mutex.\n");
 
 	// Destroy fork mutexes if they were initialized
 	if (coll->fork != NULL)

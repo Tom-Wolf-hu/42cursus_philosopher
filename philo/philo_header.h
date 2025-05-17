@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/17 18:41:15 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 22:26:32 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,18 @@ typedef struct s_thread
 
 typedef struct s_philo
 {
-	int		philo_id;
-	long	eat_start_t;
-	int		state_changed;
-	int		num_fork;
-	int		meal_count;
-	int		*sim_end;
+	int				philo_id;
+	long			eat_start_t;
+	long			eat_time;
+	long			sleep_time;
+	int				state_changed;
+	int				num_fork;
+	int				meal_count;
+	int				*sim_end;
+	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*finish;
+	pthread_mutex_t	*modify_state;
 	t_state	st;
 }	t_philo;
 
@@ -63,7 +69,8 @@ typedef	struct s_coll
 	t_input			in;
 	t_thread		th;
 	t_philo			**ph;
-	pthread_mutex_t	control;
+	pthread_mutex_t	finish;
+	pthread_mutex_t	modify_state;
 	pthread_mutex_t	*fork;
 }	t_coll;
 
@@ -86,13 +93,13 @@ int		check_input(int argc, char **argv, t_input *in_args);
 
 //philo_store.c
 void	store_input(int input_num, t_input *in_args);
-int		create_control_mutex(t_coll *coll);
+int		create_control_mutexes(t_coll *coll);
 int		create_fork_mutexes(t_coll *coll);
 int		coll_init(t_coll *coll);
 
 //philo_action.c
-int 	sleep_func(t_philo *ph, long sleep_t);
-int		eat_func(t_philo *ph, long eat_t, int eat_num);
+int 	sleep_func(t_philo *ph);
+int		eat_func(t_philo *ph);
 
 //philo_more_philo.c
 int		more_philo(t_coll *coll_orig);

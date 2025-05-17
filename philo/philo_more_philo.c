@@ -6,13 +6,13 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:43:37 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/17 18:39:29 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 22:55:44 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_header.h"
 
-static int	check_meal_count(t_coll *coll, int *eat_enough)
+static int	check_meal_count(t_coll *coll)
 {
 	int count;
 	int	i;
@@ -60,22 +60,22 @@ static int	check_die(t_coll *coll, long curren_t, int i)
 
 static void	check_state(t_coll *coll, long curren_t, int i)
 {
-	if (!coll->ph[i].state_changed)
+	if (!coll->ph[i]->state_changed)
 		return ;
-	if (coll->ph[i].st == FORK)
-		print_message(curren_t - coll->th.start_t, coll->ph[i].pilo_id, FORK);
-	if (coll->ph[i].st == EAT)
+	if (coll->ph[i]->st == FORK)
+		print_message(curren_t - coll->th.start_t, coll->ph[i]->philo_id, FORK);
+	if (coll->ph[i]->st == EAT)
 	{
-		if (coll->ph[i].num_fork == 0)
-			print_message(curren_t - coll->th.start_t, coll->ph[i].pilo_id, FORK);
-		print_message(curren_t - coll->th.start_t, coll->ph[i].pilo_id, FORK);
-		print_message(curren_t - coll->th.start_t, coll->ph[i].pilo_id, EAT);
+		if (coll->ph[i]->num_fork == 0)
+			print_message(curren_t - coll->th.start_t, coll->ph[i]->philo_id, FORK);
+		print_message(curren_t - coll->th.start_t, coll->ph[i]->philo_id, FORK);
+		print_message(curren_t - coll->th.start_t, coll->ph[i]->philo_id, EAT);
 	}
-	if (coll->ph[i].st == SLEEP)
-		print_message(curren_t - coll->th.start_t, coll->ph[i].pilo_id, SLEEP);
-	if (coll->ph[i].st == THINK)
-		print_message(curren_t - coll->th.start_t, coll->ph[i].pilo_id, THINK);
-	coll->ph[i].state_changed = 0;
+	if (coll->ph[i]->st == SLEEP)
+		print_message(curren_t - coll->th.start_t, coll->ph[i]->philo_id, SLEEP);
+	if (coll->ph[i]->st == THINK)
+		print_message(curren_t - coll->th.start_t, coll->ph[i]->philo_id, THINK);
+	coll->ph[i]->state_changed = 0;
 }
 
 static int	check_die_and_state(t_coll *coll)
@@ -99,39 +99,27 @@ static int	check_die_and_state(t_coll *coll)
 
 int	more_philo(t_coll *coll_orig)
 {
-	int		every_body_eat_enough;
-	t_coll	*coll;
+	t_coll	coll;
 	
-	every_body_eat_enough = 0;
-	while(!coll->ph.sim_end && !every_body_eat_enough)
+	// if (pthread_mutex_lock(&coll_orig->finish) != 0)
+	// {
+	// 	write_stderr("Failed to lock finish mutex in more_philo.\n");
+	// 	return (1);
+	// }
+	while(!coll_orig->th.sim_end)
 	{
-		if (pthread_mutex_lock(&coll_orig->control) != 0)
-		{
-			write_stderr("Failed to lock control mutex in more_philo.\n");
+		// if (pthread_mutex_unlock(&coll_orig->finish) != 0)
+		// {
+		// 	write_stderr("Failed to unlock finish mutex in more_philo.\n");
+		// 	return (1);
+		// }
+		coll = *coll_orig;
+		if (check_die_and_state(&coll))
 			return (1);
-		}
-		coll = coll_orig;
-		if (pthread_mutex_unlock(&coll_orig->control) != 0)
-		{
-			write_stderr("Failed to unlock control mutex in more_philo.\n");
-			return (1);
-		}
-		if (check_die_and_state(coll))
-			return (1);
-		if (coll->in.eat_num != -1 && coll->ph.meal_count == coll->in.eat_num)
-			if (check_meal_count(coll, &eat_enough))
+		if (coll.in.eat_num != -1)
+			if (check_meal_count(&coll))
 				return (1);
-		if (pthread_mutex_lock(&coll_orig->control) != 0)
-		{
-			write_stderr("Failed to lock control mutex in more_philo.\n");
-			return (1);
-		}
-		coll_orig-> = coll_orig;
-		if (pthread_mutex_unlock(&coll_orig->control) != 0)
-		{
-			write_stderr("Failed to unlock control mutex in more_philo.\n");
-			return (1);
-		}
+		*coll_orig = coll;
 		usleep(200);
 	}
 	return (0);
