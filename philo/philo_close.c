@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 10:52:46 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/17 22:26:35 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 23:17:44 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int	join_philo_threads(t_thread *th, int num_threads)
 			write_stderr("Failed to join philo thread.\n");
 			return (0);
 		}
+		printf("\033[1;38mThe %d philo joined.\033[0m\n", i + 1);
 		i++;
 	}
 	return (1);
