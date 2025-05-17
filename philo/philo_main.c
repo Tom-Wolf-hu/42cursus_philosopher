@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/17 10:33:10 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 11:09:27 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,6 @@ int	philo_threads(t_coll *coll)
 	}
 	while (i < coll->in.philo_num)
 	{
-		pthread_mutex_lock(&coll->control);
-		coll->ph.philo_id = i + 1;
-		fprintf(stderr, "The philo_num: %d in philo_threads function.\n", coll->ph.philo_id);
-		pthread_mutex_unlock(&coll->control);
 		if (pthread_create(&(coll->th.philo[i]), NULL,
 				philos_routine, (void *)coll) != 0)
 		{
@@ -57,12 +53,12 @@ int	philo_threads(t_coll *coll)
 		// 	write_stderr("philo thread creation failed.\n");
 		// 	return (free_memory(&coll->th), -2);
 		// }
-		if (pthread_detach(coll->th.philo[i]) != 0)
-		{
-			write_stderr("philo thread detach failed.\n");
-			return(-2);
-		}
-		i++;
+		// if (pthread_detach(coll->th.philo[i]) != 0)
+		// {
+		// 	write_stderr("philo thread detach failed.\n");
+		// 	return(-2);
+		// }
+		// i++;
 	}
 	return (0);
 }
@@ -107,43 +103,6 @@ int	print_thread(t_coll *coll)
 	{
 		write_stderr("Failed to get the start_time");
 		return (-3);
-	}
-	return (0);
-}
-
-int	create_fork_mutexes(t_coll *coll)
-{
-    int	i;
-
-    i = 0;
-    coll->fork = malloc(coll->in.philo_num * sizeof(pthread_mutex_t));
-    if (!coll->fork)
-    {
-        write_stderr("Failed to allocate memory for fork mutexes.\n");
-        return (-1);
-    }
-    while (i < coll->in.philo_num)
-    {
-        if (pthread_mutex_init(&coll->fork[i], NULL) != 0)
-        {
-            write_stderr("Failed to initialize a fork mutex.\n");
-            while (--i >= 0)
-                pthread_mutex_destroy(&coll->fork[i]);
-            free(coll->fork);
-            coll->fork = NULL;
-            return (-2);
-        }
-        i++;
-    }
-    return (0);
-}
-
-int	create_control_mutex(t_coll *coll)
-{
-	if (pthread_mutex_init(&coll->control, NULL) != 0)
-	{
-		write_stderr("The control mutex initialization failed.\n");
-		return (-1);
 	}
 	return (0);
 }

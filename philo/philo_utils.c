@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 20:13:14 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/16 14:32:45 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 10:55:04 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,46 +50,4 @@ int	ft_isdigit(char ch)
 	if (ch >= '0' && ch <= '9')
 		return (1);
 	return (0);
-}
-
-void	free_memory(t_coll *coll)
-{
-	int	i;
-
-	i = 0;
-	// Destroy the control mutex if it was initialized
-	if (coll->in.philo_num > 0 && pthread_mutex_destroy(&coll->control) != 0)
-		write_stderr("Failed to destroy the control mutex.\n");
-
-	// Destroy fork mutexes if they were initialized
-	if (coll->fork != NULL)
-	{
-		while (i < coll->in.philo_num)
-		{
-			if (pthread_mutex_destroy(&coll->fork[i]) != 0)
-				write_stderr("Failed to destroy the fork mutex.\n");
-			i++;
-		}
-		free(coll->fork);
-		coll->fork = NULL;
-	}
-
-	i = 0;
-	if (coll->ph)
-	{
-		while (i < coll->in.philo_num)
-		{
-			free(coll->ph[i]);
-			i++;
-		}
-		free(coll->ph);
-		coll->ph = NULL;
-	}
-
-	// Free philosopher threads if allocated
-	if (coll->th.philo != NULL)
-	{
-		free(coll->th.philo);
-		coll->th.philo = NULL;
-	}
 }

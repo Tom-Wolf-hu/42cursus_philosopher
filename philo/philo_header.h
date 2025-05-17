@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/17 10:05:44 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 11:08:47 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ int		ft_strlen_p(char *str);
 void	write_stderr(char *str);
 int		ft_isspace(char ch);
 int		ft_isdigit(char ch);
-void	free_memory(t_coll *coll);
 
 //philo_time.c
 long	get_current_time(void);
@@ -95,6 +94,10 @@ void    died_func(t_philo *ph, long die_time, long start_t);
 
 //philo_more_philo.c
 int		more_philo(t_coll *coll_orig);
+
+//philo_close.c
+void	free_memory(t_coll *coll);
+int		join_philo_threads(t_thread *th, int num_threads);
 
 /*
 	The following test_func.c file consist functions which helped during
