@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/17 23:35:06 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/18 14:56:59 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,23 +31,20 @@ void	*philos_routine(void *arg)
 	while (!(*(ph->sim_end)))
 	{
 		i++;
-		if (i < 5)
-			printf("\033[1;35mThe ph->sim_end: %d\033[0m\n", *(ph->sim_end));
+		if (i < 9)
+			printf("\033[1;35m[%d] The philo_id: %d The ph->sim_end: %d\033[0m\n", i, ph->philo_id, *(ph->sim_end));
 		if (pthread_mutex_unlock(ph->finish) != 0)
 		{
 			write_stderr("Failed to unlock finish mutex in more_philo.\n");
 			return ((void *)1);
 		}
-		write(1, "hello1\n", 7);
 		if (ph->philo_id % 2 == 1)
 		{
-			write(1, "hello1.0\n", 9);
 			if (pthread_mutex_lock(ph->left_fork) != 0)
 			{
 				write_stderr("Failed to lock the left fork.\n");
 				return ((void *)1);
 			}
-			write(1, "hello1.1\n", 9);
 			ph->st = FORK;
 			ph->state_changed = 1;
 			if (pthread_mutex_lock(ph->right_fork) != 0)
@@ -55,7 +52,6 @@ void	*philos_routine(void *arg)
 				write_stderr("Failed to lock the right fork.\n");
 				return ((void *)1);
 			}
-			write(1, "hello1.2\n", 9);
 		}
 		else
 		{
@@ -72,11 +68,9 @@ void	*philos_routine(void *arg)
 				return ((void *)1);
 			}
 		}
-		write(1, "hello2\n", 7);
 		if (eat_func(ph) < 0)
 			return ((void *)2);
-		printf("The philo[%d] are saying hello to you.\n", ph->philo_id);
-		write(1, "hello3\n", 7);
+		// printf("The philo[%d] are saying hello to you.\n", ph->philo_id);
 		if (ph->philo_id % 2 == 1)
 		{
 			if (pthread_mutex_unlock(ph->left_fork) != 0)
@@ -103,17 +97,22 @@ void	*philos_routine(void *arg)
 				return ((void *)1);
 			}
 		}
-		write(1, "hello4\n", 7);
 		if (sleep_func(ph) < 0)
 			return ((void *)3);
 		ph->st = THINK;
 		ph->state_changed = 1;
-		write(1, "hello5\n", 7);
+		if (i < 9)
+			printf("\033[1;32m[%d] The philo_id: %d The ph->sim_end: %d\033[0m\n", i, ph->philo_id, *(ph->sim_end));
 		if (pthread_mutex_lock(ph->finish) != 0)
 		{
 			write_stderr("Failed to lock finish mutex in more_philo.\n");
 			return ((void *)1);
 		}
+	}
+	if (pthread_mutex_unlock(ph->finish) != 0)
+	{
+		write_stderr("Failed to unlock finish mutex in more_philo.\n");
+		return ((void *)1);
 	}
 	return ((void *)0);
 }
@@ -167,21 +166,14 @@ void	*print_monitor(void *arg)
 	}
 	if (coll->in.philo_num == 1)
 	{
-		one_philo(coll->th.start_t, (long)coll->in.die_t);
-		if (pthread_mutex_lock(&coll->finish) != 0)
-		{
-			write_stderr("Failed to lock finish mutex in more_philo.\n");
-			return ((void *)1);
-		}
-		coll->th.sim_end = 1;
-		if (pthread_mutex_unlock(&coll->finish) != 0)
-		{
-			write_stderr("Failed to unlock finish mutex in more_philo.\n");
-			return ((void *)1);
-		}
+		if (one_philo(coll->th.start_t, (long)coll->in.die_t) < 0)
+			return((void *)1);
 	}
-	// else
-	// 	more_philo(coll);
+	else
+	{
+		if (more_philo(coll) < 0)
+			return((void *)2);
+	}
 	return((void *)0);
 }
 

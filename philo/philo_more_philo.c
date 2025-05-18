@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:43:37 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/17 22:55:44 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/18 14:41:14 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,17 @@ static int	check_die(t_coll *coll, long curren_t, int i)
 	{
 		if (curren_t - coll->th.start_t > coll->in.die_t)
 		{
+			if (pthread_mutex_lock(&coll->finish) != 0)
+			{
+				write_stderr("Failed to lock finish mutex in check_die.\n");
+				return (-1);
+			}
 			coll->th.sim_end = 1;
+			if (pthread_mutex_unlock(&coll->finish) != 0)
+			{
+				write_stderr("Failed to unlock finish mutex in check_die.\n");
+				return (-1);
+			}
 			print_message(curren_t - coll->th.start_t, coll->ph[i]->philo_id, DIE);
 			return (1);
 		}
@@ -50,7 +60,17 @@ static int	check_die(t_coll *coll, long curren_t, int i)
 	{
 		if (curren_t - coll->ph[i]->eat_start_t > coll->in.die_t)
 		{
+			if (pthread_mutex_lock(&coll->finish) != 0)
+			{
+				write_stderr("Failed to lock finish mutex in check_die.\n");
+				return (-1);
+			}
 			coll->th.sim_end = 1;
+			if (pthread_mutex_unlock(&coll->finish) != 0)
+			{
+				write_stderr("Failed to unlock finish mutex in check_die.\n");
+				return (-1);
+			}
 			print_message(curren_t - coll->ph[i]->eat_start_t, coll->ph[i]->philo_id, DIE);
 			return (1);
 		}
@@ -97,29 +117,26 @@ static int	check_die_and_state(t_coll *coll)
 	return (0);
 }
 
-int	more_philo(t_coll *coll_orig)
+int	more_philo(t_coll *coll)
 {
-	t_coll	coll;
 	
 	// if (pthread_mutex_lock(&coll_orig->finish) != 0)
 	// {
 	// 	write_stderr("Failed to lock finish mutex in more_philo.\n");
 	// 	return (1);
 	// }
-	while(!coll_orig->th.sim_end)
+	while(!coll->th.sim_end)
 	{
 		// if (pthread_mutex_unlock(&coll_orig->finish) != 0)
 		// {
 		// 	write_stderr("Failed to unlock finish mutex in more_philo.\n");
 		// 	return (1);
 		// }
-		coll = *coll_orig;
-		if (check_die_and_state(&coll))
-			return (1);
-		if (coll.in.eat_num != -1)
-			if (check_meal_count(&coll))
-				return (1);
-		*coll_orig = coll;
+		if (check_die_and_state(coll))
+			return (-1);
+		if (coll->in.eat_num != -1)
+			if (check_meal_count(coll))
+				return (-2);
 		usleep(200);
 	}
 	return (0);

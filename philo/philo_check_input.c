@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 20:18:06 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/16 14:23:19 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/17 23:55:56 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ static int	check_argnum(int argc)
 	{
 		write_stderr("Please give the input argument for "
 			"the program the following way:\n");
-		write_stderr("\033[1;33m\nnumber_of_pfilosophers time_to_die"
-			" time_to_eat time_to_eat time_to_sleep"
+		write_stderr("\033[1;33m\nnumber_of_pfilosophers"
+			" time_to_die time_to_eat time_to_sleep"
 			" [number_of_times_each_philosopher_must_eat]\n\n\033[0m");
 		write_stderr("The last parameter optional.\n");
 		return (0);
