@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:43:37 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/18 14:41:14 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/18 19:35:06 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,19 @@ static int	check_meal_count(t_coll *coll)
 	}
 	if (count == coll->in.philo_num)
 	{
+		if (pthread_mutex_lock(&coll->finish) != 0)
+		{
+			write_stderr("Failed to lock finish mutex in check_meal_count.\n");
+			return (-1);
+		}
 		coll->th.sim_end = 1;
+		if (pthread_mutex_unlock(&coll->finish) != 0)
+		{
+			write_stderr("Failed to unlock finish mutex in check_die.\n");
+			return (-1);
+		}
 		printf("\033[1;32mAll philosophers eat at"
-			" least %d times.\033[0m\n", coll->in.philo_num);
+			" least %d times.\033[0m\n", coll->in.eat_num);
 		return (1);
 	}
 	return (0);
@@ -44,13 +54,13 @@ static int	check_die(t_coll *coll, long curren_t, int i)
 			if (pthread_mutex_lock(&coll->finish) != 0)
 			{
 				write_stderr("Failed to lock finish mutex in check_die.\n");
-				return (-1);
+				return (1);
 			}
 			coll->th.sim_end = 1;
 			if (pthread_mutex_unlock(&coll->finish) != 0)
 			{
 				write_stderr("Failed to unlock finish mutex in check_die.\n");
-				return (-1);
+				return (1);
 			}
 			print_message(curren_t - coll->th.start_t, coll->ph[i]->philo_id, DIE);
 			return (1);
@@ -63,13 +73,13 @@ static int	check_die(t_coll *coll, long curren_t, int i)
 			if (pthread_mutex_lock(&coll->finish) != 0)
 			{
 				write_stderr("Failed to lock finish mutex in check_die.\n");
-				return (-1);
+				return (1);
 			}
 			coll->th.sim_end = 1;
 			if (pthread_mutex_unlock(&coll->finish) != 0)
 			{
 				write_stderr("Failed to unlock finish mutex in check_die.\n");
-				return (-1);
+				return (1);
 			}
 			print_message(curren_t - coll->ph[i]->eat_start_t, coll->ph[i]->philo_id, DIE);
 			return (1);
@@ -111,7 +121,17 @@ static int	check_die_and_state(t_coll *coll)
 	{
 		if (check_die(coll, curren_t, i))
 			return (1);
+		if (pthread_mutex_lock(&coll->modify_state) != 0)
+		{
+			write_stderr("Failed to lock modify_state mutex in check_state.\n");
+			return (1);
+		}
 		check_state(coll, curren_t, i);
+		if (pthread_mutex_unlock(&coll->modify_state) != 0)
+		{
+			write_stderr("Failed to unlock modify_state mutex in check_state.\n");
+			return (1);
+		}
 		i++;
 	}
 	return (0);

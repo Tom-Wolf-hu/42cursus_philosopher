@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/18 14:56:59 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/18 15:46:06 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,18 @@ void	*philos_routine(void *arg)
 				write_stderr("Failed to lock the left fork.\n");
 				return ((void *)1);
 			}
+			if (pthread_mutex_lock(ph->modify_state) != 0)
+			{
+				write_stderr("Failed to lock the modify state.\n");
+				return ((void *)1);
+			}
 			ph->st = FORK;
 			ph->state_changed = 1;
+			if (pthread_mutex_unlock(ph->modify_state) != 0)
+			{
+				write_stderr("Failed to unlock the modify state.\n");
+				return ((void *)1);
+			}
 			if (pthread_mutex_lock(ph->right_fork) != 0)
 			{
 				write_stderr("Failed to lock the right fork.\n");
@@ -60,8 +70,18 @@ void	*philos_routine(void *arg)
 				write_stderr("Failed to lock the left fork.\n");
 				return ((void *)1);
 			}
+			if (pthread_mutex_lock(ph->modify_state) != 0)
+			{
+				write_stderr("Failed to lock the modify state.\n");
+				return ((void *)1);
+			}
 			ph->st = FORK;
 			ph->state_changed = 1;
+			if (pthread_mutex_unlock(ph->modify_state) != 0)
+			{
+				write_stderr("Failed to unlock the modify state.\n");
+				return ((void *)1);
+			}
 			if (pthread_mutex_lock(ph->left_fork) != 0)
 			{
 				write_stderr("Failed to lock the right fork.\n");
@@ -99,8 +119,18 @@ void	*philos_routine(void *arg)
 		}
 		if (sleep_func(ph) < 0)
 			return ((void *)3);
+		if (pthread_mutex_lock(ph->modify_state) != 0)
+		{
+			write_stderr("Failed to lock the modify state.\n");
+			return ((void *)1);
+		}
 		ph->st = THINK;
 		ph->state_changed = 1;
+		if (pthread_mutex_unlock(ph->modify_state) != 0)
+		{
+			write_stderr("Failed to unlock the modify state.\n");
+			return ((void *)1);
+		}
 		if (i < 9)
 			printf("\033[1;32m[%d] The philo_id: %d The ph->sim_end: %d\033[0m\n", i, ph->philo_id, *(ph->sim_end));
 		if (pthread_mutex_lock(ph->finish) != 0)
