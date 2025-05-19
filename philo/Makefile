@@ -7,6 +7,7 @@ SRC =	philo_main.c \
 		philo_store.c \
 		philo_time.c \
 		philo_utils.c \
+		philo_philos_routine.c \
 		philo_action.c \
 		philo_more_philo.c \
 		philo_check_state.c \

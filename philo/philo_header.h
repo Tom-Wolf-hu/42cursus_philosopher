@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 11:24:36 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 13:06:59 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,10 @@ int		create_fork_mutexes(t_coll *coll);
 
 //philo_coll_init.c
 int		coll_init(t_coll *coll);
+
+//philo_philos_routine.c
+int		change_philo_state(t_philo *ph, t_state ch_state);
+void	*philos_routine(void *arg);
 
 //philo_action.c
 int		sleep_func(t_philo *ph);

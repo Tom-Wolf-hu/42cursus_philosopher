@@ -6,147 +6,11 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 10:19:02 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 11:40:36 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_header.h"
-
-void	*philos_routine(void *arg)
-{
-	t_philo	*ph;
-	int		i;
-
-	i = 0;
-	ph = (t_philo *)arg;
-	if (ph->philo_id % 2 == 1)
-		usleep(100);
-	if (!ph->right_fork)
-		return ((void *)0);
-	if (pthread_mutex_lock(ph->finish) != 0)
-	{
-		write_stderr("Failed to lock finish mutex in more_philo.\n");
-		return ((void *)1);
-	}
-	while (!(*(ph->sim_end)))
-	{
-		i++;
-		if (i < 9)
-			printf("\033[1;35m[%d] The philo_id: %d The ph->sim_end:"
-				" %d\033[0m\n", i, ph->philo_id, *(ph->sim_end));
-		if (pthread_mutex_unlock(ph->finish) != 0)
-		{
-			write_stderr("Failed to unlock finish mutex in more_philo.\n");
-			return ((void *)1);
-		}
-		if (ph->philo_id % 2 == 1)
-		{
-			if (pthread_mutex_lock(ph->left_fork) != 0)
-			{
-				write_stderr("Failed to lock the left fork.\n");
-				return ((void *)1);
-			}
-			if (pthread_mutex_lock(ph->modify_state) != 0)
-			{
-				write_stderr("Failed to lock the modify state.\n");
-				return ((void *)1);
-			}
-			ph->st = FORK;
-			ph->state_changed = 1;
-			if (pthread_mutex_unlock(ph->modify_state) != 0)
-			{
-				write_stderr("Failed to unlock the modify state.\n");
-				return ((void *)1);
-			}
-			if (pthread_mutex_lock(ph->right_fork) != 0)
-			{
-				write_stderr("Failed to lock the right fork.\n");
-				return ((void *)1);
-			}
-		}
-		else
-		{
-			if (pthread_mutex_lock(ph->right_fork) != 0)
-			{
-				write_stderr("Failed to lock the left fork.\n");
-				return ((void *)1);
-			}
-			if (pthread_mutex_lock(ph->modify_state) != 0)
-			{
-				write_stderr("Failed to lock the modify state.\n");
-				return ((void *)1);
-			}
-			ph->st = FORK;
-			ph->state_changed = 1;
-			if (pthread_mutex_unlock(ph->modify_state) != 0)
-			{
-				write_stderr("Failed to unlock the modify state.\n");
-				return ((void *)1);
-			}
-			if (pthread_mutex_lock(ph->left_fork) != 0)
-			{
-				write_stderr("Failed to lock the right fork.\n");
-				return ((void *)1);
-			}
-		}
-		if (eat_func(ph) < 0)
-			return ((void *)2);
-		if (ph->philo_id % 2 == 1)
-		{
-			if (pthread_mutex_unlock(ph->left_fork) != 0)
-			{
-				write_stderr("Failed to unlock the left fork.\n");
-				return ((void *)1);
-			}
-			if (pthread_mutex_unlock(ph->right_fork) != 0)
-			{
-				write_stderr("Failed to unlock the right fork.\n");
-				return ((void *)1);
-			}
-		}
-		else
-		{
-			if (pthread_mutex_unlock(ph->right_fork) != 0)
-			{
-				write_stderr("Failed to unlock the left fork.\n");
-				return ((void *)1);
-			}
-			if (pthread_mutex_unlock(ph->left_fork) != 0)
-			{
-				write_stderr("Failed to unlock the right fork.\n");
-				return ((void *)1);
-			}
-		}
-		if (sleep_func(ph) < 0)
-			return ((void *)3);
-		if (pthread_mutex_lock(ph->modify_state) != 0)
-		{
-			write_stderr("Failed to lock the modify state.\n");
-			return ((void *)1);
-		}
-		ph->st = THINK;
-		ph->state_changed = 1;
-		if (pthread_mutex_unlock(ph->modify_state) != 0)
-		{
-			write_stderr("Failed to unlock the modify state.\n");
-			return ((void *)1);
-		}
-		if (i < 9)
-			printf("\033[1;32m[%d] The philo_id: %d The ph->sim_end:"
-				" %d\033[0m\n", i, ph->philo_id, *(ph->sim_end));
-		if (pthread_mutex_lock(ph->finish) != 0)
-		{
-			write_stderr("Failed to lock finish mutex in more_philo.\n");
-			return ((void *)1);
-		}
-	}
-	if (pthread_mutex_unlock(ph->finish) != 0)
-	{
-		write_stderr("Failed to unlock finish mutex in more_philo.\n");
-		return ((void *)1);
-	}
-	return ((void *)0);
-}
 
 int	philo_threads(t_coll *coll)
 {
@@ -178,18 +42,15 @@ void	*print_monitor(void *arg)
 	t_coll	*coll;
 	int		i;
 
-	i = 0;
+	i = -1;
 	coll = (t_coll *)arg;
 	while (coll->th.start_t < 0)
 	{
 		usleep(10);
 		continue ;
 	}
-	while (i < coll->in.philo_num)
-	{
+	while (++i < coll->in.philo_num)
 		print_message(get_current_time() - coll->th.start_t, i + 1, THINK);
-		i++;
-	}
 	if (coll->in.philo_num == 1)
 	{
 		if (one_philo(coll->th.start_t, (long)coll->in.die_t) < 0)
@@ -233,8 +94,6 @@ int	main(int argc, char **argv)
 	if (!coll_init(&coll))
 		return (1);
 	write(1, "passed2\n", 8);
-	if (!coll.fork)
-		printf("\033[1,33mthe coll fork NULL before print_thread\n\033m");
 	if (print_thread(&coll) < 0)
 		return (free_memory(&coll), 1);
 	write(1, "passed3\n", 8);
