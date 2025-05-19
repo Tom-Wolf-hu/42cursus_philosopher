@@ -6,24 +6,46 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 10:52:46 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/19 23:31:00 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/20 01:39:02 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_header.h"
 
+int	change_sim_end(t_coll *coll)
+{
+	if (pthread_mutex_lock(&coll->finish) != 0)
+	{
+		write_stderr("Failed to lock finish mutex.\n");
+		return (-1);
+	}
+	coll->th.sim_end = 1;
+	if (pthread_mutex_unlock(&coll->finish) != 0)
+	{
+		write_stderr("Failed to unlock finish mutex.\n");
+		return (-1);
+	}
+	return (0);
+}
+
 int	join_philo_threads(t_thread *th, int num_threads)
 {
-	int	i;
+	int		i;
+	void	*join_result;
+	int		*result;
 
 	i = 0;
+	join_result = NULL;
 	while (i < num_threads)
 	{
-		if (pthread_join(th->philo[i], NULL) != 0)
+		if (pthread_join(th->philo[i], &join_result) != 0)
 		{
 			write_stderr("Failed to join philo thread.\n");
 			return (0);
 		}
+		result = (int *)join_result;
+		if (result != 0)
+			write_stderr("Problem occur in philo thread.\n");
 		printf("\033[1;38mThe %d philo joined.\033[0m\n", i + 1);
 		i++;
 	}

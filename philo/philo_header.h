@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 23:59:22 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/20 01:08:47 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ int		more_philo(t_coll *coll_orig);
 void	check_state(t_coll *coll, long curren_t, int i);
 
 //philo_close.c
+int		change_sim_end(t_coll *coll);
 int		join_philo_threads(t_thread *th, int num_threads);
 void	destroy_mutexes(t_coll *coll);
 void	free_memory(t_coll *coll);

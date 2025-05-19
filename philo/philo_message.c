@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:17:24 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 10:01:44 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/20 01:45:14 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	one_philo(long start_t, long die_t)
 	current_t = get_current_time();
 	if (current_t < 0)
 		return (-1);
+	print_message(current_t - start_t, 1, THINK);
 	print_message(current_t - start_t, 1, FORK);
 	my_usleep(die_t);
 	current_t = get_current_time();
