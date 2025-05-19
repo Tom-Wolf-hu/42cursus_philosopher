@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:14:37 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/17 23:39:06 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 09:49:41 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,29 +32,29 @@ void	store_input(int input_num, t_input *in_args)
 
 int	create_fork_mutexes(t_coll *coll)
 {
-    int	i;
+	int	i;
 
-    i = 0;
-    coll->fork = malloc(coll->in.philo_num * sizeof(pthread_mutex_t));
-    if (!coll->fork)
-    {
-        write_stderr("Failed to allocate memory for fork mutexes.\n");
-        return (-1);
-    }
-    while (i < coll->in.philo_num)
-    {
-        if (pthread_mutex_init(&coll->fork[i], NULL) != 0)
-        {
-            write_stderr("Failed to initialize a fork mutex.\n");
-            while (--i >= 0)
-                pthread_mutex_destroy(&coll->fork[i]);
-            free(coll->fork);
-            coll->fork = NULL;
-            return (-2);
-        }
-        i++;
-    }
-    return (0);
+	i = 0;
+	coll->fork = malloc(coll->in.philo_num * sizeof(pthread_mutex_t));
+	if (!coll->fork)
+	{
+		write_stderr("Failed to allocate memory for fork mutexes.\n");
+		return (-1);
+	}
+	while (i < coll->in.philo_num)
+	{
+		if (pthread_mutex_init(&coll->fork[i], NULL) != 0)
+		{
+			write_stderr("Failed to initialize a fork mutex.\n");
+			while (--i >= 0)
+				pthread_mutex_destroy(&coll->fork[i]);
+			free(coll->fork);
+			coll->fork = NULL;
+			return (-2);
+		}
+		i++;
+	}
+	return (0);
 }
 
 int	create_control_mutexes(t_coll *coll)
@@ -75,7 +75,7 @@ int	create_control_mutexes(t_coll *coll)
 int	coll_init(t_coll *coll)
 {
 	int	i;
-	
+
 	i = 0;
 	coll->th.philo = NULL;
 	coll->th.start_t = -1;
@@ -96,7 +96,7 @@ int	coll_init(t_coll *coll)
 		if (!coll->ph[i])
 		{
 			write_stderr("Failed allocate memory for individual philo.\n");
-			while(--i >= 0)
+			while (--i >= 0)
 				free(coll->ph[i]);
 			free(coll->ph);
 			coll->ph = NULL;
@@ -107,6 +107,7 @@ int	coll_init(t_coll *coll)
 		coll->ph[i]->eat_time = (long)coll->in.eat_t;
 		coll->ph[i]->sleep_time = (long)coll->in.sleep_t;
 		coll->ph[i]->state_changed = 0;
+		coll->ph[i]->thinked = 0;
 		coll->ph[i]->num_fork = 0;
 		coll->ph[i]->meal_count = 0;
 		if (coll->in.eat_num == -1)

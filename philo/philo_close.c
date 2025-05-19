@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 10:52:46 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/17 23:17:44 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 10:08:59 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,9 @@ void	free_memory(t_coll *coll)
 	i = 0;
 	if (coll->in.philo_num > 0 && pthread_mutex_destroy(&coll->finish) != 0)
 		write_stderr("Failed to destroy the finish mutex.\n");
-	if (coll->in.philo_num > 0 && pthread_mutex_destroy(&coll->modify_state) != 0)
+	if (coll->in.philo_num > 0
+		&& pthread_mutex_destroy(&coll->modify_state) != 0)
 		write_stderr("Failed to destroy the modify_state mutex.\n");
-
-	// Destroy fork mutexes if they were initialized
 	if (coll->fork != NULL)
 	{
 		while (i < coll->in.philo_num)
@@ -52,7 +51,6 @@ void	free_memory(t_coll *coll)
 		free(coll->fork);
 		coll->fork = NULL;
 	}
-
 	i = 0;
 	if (coll->ph)
 	{
@@ -64,8 +62,6 @@ void	free_memory(t_coll *coll)
 		free(coll->ph);
 		coll->ph = NULL;
 	}
-
-	// Free philosopher threads if allocated
 	if (coll->th.philo != NULL)
 	{
 		free(coll->th.philo);

@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/18 15:46:06 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 10:19:02 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	*philos_routine(void *arg)
 {
 	t_philo	*ph;
-	int 	i;
+	int		i;
 
 	i = 0;
 	ph = (t_philo *)arg;
@@ -32,7 +32,8 @@ void	*philos_routine(void *arg)
 	{
 		i++;
 		if (i < 9)
-			printf("\033[1;35m[%d] The philo_id: %d The ph->sim_end: %d\033[0m\n", i, ph->philo_id, *(ph->sim_end));
+			printf("\033[1;35m[%d] The philo_id: %d The ph->sim_end:"
+				" %d\033[0m\n", i, ph->philo_id, *(ph->sim_end));
 		if (pthread_mutex_unlock(ph->finish) != 0)
 		{
 			write_stderr("Failed to unlock finish mutex in more_philo.\n");
@@ -90,7 +91,6 @@ void	*philos_routine(void *arg)
 		}
 		if (eat_func(ph) < 0)
 			return ((void *)2);
-		// printf("The philo[%d] are saying hello to you.\n", ph->philo_id);
 		if (ph->philo_id % 2 == 1)
 		{
 			if (pthread_mutex_unlock(ph->left_fork) != 0)
@@ -132,7 +132,8 @@ void	*philos_routine(void *arg)
 			return ((void *)1);
 		}
 		if (i < 9)
-			printf("\033[1;32m[%d] The philo_id: %d The ph->sim_end: %d\033[0m\n", i, ph->philo_id, *(ph->sim_end));
+			printf("\033[1;32m[%d] The philo_id: %d The ph->sim_end:"
+				" %d\033[0m\n", i, ph->philo_id, *(ph->sim_end));
 		if (pthread_mutex_lock(ph->finish) != 0)
 		{
 			write_stderr("Failed to lock finish mutex in more_philo.\n");
@@ -167,11 +168,6 @@ int	philo_threads(t_coll *coll)
 			return (-2);
 		}
 		printf("\033[1;35mThe %d philo created.\033[0m\n", i + 1);
-		// if (pthread_create(&(coll->th.philo[i]), NULL, testfunc, NULL) != 0)
-		// {
-		// 	write_stderr("philo thread creation failed.\n");
-		// 	return (free_memory(&coll->th), -2);
-		// }
 		i++;
 	}
 	return (0);
@@ -197,19 +193,20 @@ void	*print_monitor(void *arg)
 	if (coll->in.philo_num == 1)
 	{
 		if (one_philo(coll->th.start_t, (long)coll->in.die_t) < 0)
-			return((void *)1);
+			return ((void *)1);
 	}
 	else
 	{
 		if (more_philo(coll) < 0)
-			return((void *)2);
+			return ((void *)2);
 	}
-	return((void *)0);
+	return ((void *)0);
 }
 
 int	print_thread(t_coll *coll)
 {
-	if (pthread_create(&(coll->th.monitor), NULL, print_monitor, (void *)coll) != 0)
+	if (pthread_create(&(coll->th.monitor), NULL,
+			print_monitor, (void *)coll) != 0)
 	{
 		write_stderr("monitor thread creation failed.\n");
 		return (-1);
@@ -229,7 +226,6 @@ int	main(int argc, char **argv)
 {
 	t_coll	coll;
 
-	// pthread_create(&id, NULL, testfunc, NULL);
 	write(1, "passed0\n", 8);
 	if (!check_input(argc, argv, &coll.in))
 		return (1);
@@ -251,7 +247,6 @@ int	main(int argc, char **argv)
 	if (!join_philo_threads(&coll.th, coll.in.philo_num))
 		return (1);
 	write(1, "passed5\n", 8);
-	// main_thread_print(&coll);
 	free_memory(&coll);
 	return (0);
 }

@@ -6,13 +6,13 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 18:17:24 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/16 13:01:23 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 10:01:44 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_header.h"
 
-int	one_philo(long start_t,long die_t)
+int	one_philo(long start_t, long die_t)
 {
 	long	current_t;
 
@@ -21,7 +21,6 @@ int	one_philo(long start_t,long die_t)
 		return (-1);
 	print_message(current_t - start_t, 1, FORK);
 	my_usleep(die_t);
-	//usleep(1000);
 	current_t = get_current_time();
 	if (current_t < 0)
 		return (-1);

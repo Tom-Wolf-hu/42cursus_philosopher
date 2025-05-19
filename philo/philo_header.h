@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/17 22:26:32 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 10:04:43 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_philo
 	long			eat_time;
 	long			sleep_time;
 	int				state_changed;
+	int				thinked;
 	int				num_fork;
 	int				meal_count;
 	int				*sim_end;
@@ -60,11 +61,11 @@ typedef struct s_philo
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*finish;
 	pthread_mutex_t	*modify_state;
-	t_state	st;
+	t_state			st;
 }	t_philo;
 
 //This structure consists dynamically allocated memory: fork, ph
-typedef	struct s_coll
+typedef struct s_coll
 {
 	t_input			in;
 	t_thread		th;
@@ -75,7 +76,7 @@ typedef	struct s_coll
 }	t_coll;
 
 //philo_message.c
-int		one_philo(long start_t,long die_t);
+int		one_philo(long start_t, long die_t);
 void	print_message(long time_ms, int philo_num, t_state message);
 
 //philo_utils.c
@@ -98,7 +99,7 @@ int		create_fork_mutexes(t_coll *coll);
 int		coll_init(t_coll *coll);
 
 //philo_action.c
-int 	sleep_func(t_philo *ph);
+int		sleep_func(t_philo *ph);
 int		eat_func(t_philo *ph);
 
 //philo_more_philo.c
