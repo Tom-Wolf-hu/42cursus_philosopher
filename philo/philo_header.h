@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 13:06:59 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 14:42:12 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,14 +118,5 @@ void	check_state(t_coll *coll, long curren_t, int i);
 int		join_philo_threads(t_thread *th, int num_threads);
 void	destroy_mutexes(t_coll *coll);
 void	free_memory(t_coll *coll);
-
-/*
-	The following test_func.c file consist functions which helped during
-	the project understand and check different things, but these not directly
-	related with the project, so in the end these should be deleted
-*/
-//test_funcs.c
-void	main_thread_print(t_coll *coll);
-void	*testfunc(void *arg);
 
 #endif

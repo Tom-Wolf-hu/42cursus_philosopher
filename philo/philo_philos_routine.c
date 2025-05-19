@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 11:39:13 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/19 13:15:50 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 13:39:21 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 int	change_philo_state(t_philo *ph, t_state ch_state)
 {
-	if (ch_state == THINK)
-		usleep(1400);
 	if (pthread_mutex_lock(ph->modify_state) != 0)
 	{
 		write_stderr("Failed to lock the modify state.\n");
@@ -31,7 +29,8 @@ int	change_philo_state(t_philo *ph, t_state ch_state)
 	return (0);
 }
 
-static int	lock_fork(t_philo *ph, pthread_mutex_t *first_fork, pthread_mutex_t *second_fork)
+static int	lock_fork(t_philo *ph, pthread_mutex_t *first_fork,
+	pthread_mutex_t *second_fork)
 {
 	if (pthread_mutex_lock(first_fork) != 0)
 	{
@@ -77,17 +76,10 @@ static int	eat_procedure(t_philo *ph)
 	return (0);
 }
 
-static int	do_eat_sleep_think(t_philo *philo)
+static int	do_eat_sleep_think(t_philo *ph)
 {
-	int		i;
-
-	i = 0;
 	while (!(*(ph->sim_end)))
 	{
-		i++;
-		if (i < 9)
-			printf("\033[1;35m[%d] The philo_id: %d The ph->sim_end:"
-				" %d\033[0m\n", i, ph->philo_id, *(ph->sim_end));
 		if (pthread_mutex_unlock(ph->finish) != 0)
 		{
 			write_stderr("Failed to unlock finish mutex in more_philo.\n");
@@ -99,9 +91,6 @@ static int	do_eat_sleep_think(t_philo *philo)
 			return (-3);
 		if (change_philo_state(ph, THINK) < 0)
 			return (-1);
-		if (i < 9)
-			printf("\033[1;32m[%d] The philo_id: %d The ph->sim_end:"
-				" %d\033[0m\n", i, ph->philo_id, *(ph->sim_end));
 		if (pthread_mutex_lock(ph->finish) != 0)
 		{
 			write_stderr("Failed to lock finish mutex in more_philo.\n");
