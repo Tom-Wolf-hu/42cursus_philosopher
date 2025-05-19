@@ -10,6 +10,7 @@ SRC =	philo_main.c \
 		philo_action.c \
 		philo_more_philo.c \
 		philo_close.c \
+		philo_coll_init.c \
 		test_funcs.c
 
 OBJ_DIR = obj

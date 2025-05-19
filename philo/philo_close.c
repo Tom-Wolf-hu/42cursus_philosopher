@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 10:52:46 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/19 10:08:59 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 10:34:01 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	join_philo_threads(t_thread *th, int num_threads)
 	return (1);
 }
 
-void	free_memory(t_coll *coll)
+void	destroy_mutexes(t_coll *coll)
 {
 	int	i;
 
@@ -51,7 +51,14 @@ void	free_memory(t_coll *coll)
 		free(coll->fork);
 		coll->fork = NULL;
 	}
+}
+
+void	free_memory(t_coll *coll)
+{
+	int	i;
+
 	i = 0;
+	destroy_mutexes(coll);
 	if (coll->ph)
 	{
 		while (i < coll->in.philo_num)

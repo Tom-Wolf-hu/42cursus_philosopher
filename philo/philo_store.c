@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:14:37 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 09:49:41 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 10:56:31 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,58 +70,4 @@ int	create_control_mutexes(t_coll *coll)
 		return (-2);
 	}
 	return (0);
-}
-
-int	coll_init(t_coll *coll)
-{
-	int	i;
-
-	i = 0;
-	coll->th.philo = NULL;
-	coll->th.start_t = -1;
-	coll->th.sim_end = 0;
-	if (create_control_mutexes(coll) < 0)
-		return (0);
-	if (create_fork_mutexes(coll) < 0)
-		return (0);
-	coll->ph = (t_philo **)malloc(coll->in.philo_num * sizeof(t_philo *));
-	if (!coll->ph)
-	{
-		write_stderr("Failed to allocate memory for ph philo double pointer\n");
-		return (0);
-	}
-	while (i < coll->in.philo_num)
-	{
-		coll->ph[i] = (t_philo *)malloc(sizeof(t_philo));
-		if (!coll->ph[i])
-		{
-			write_stderr("Failed allocate memory for individual philo.\n");
-			while (--i >= 0)
-				free(coll->ph[i]);
-			free(coll->ph);
-			coll->ph = NULL;
-			return (0);
-		}
-		coll->ph[i]->philo_id = i + 1;
-		coll->ph[i]->eat_start_t = -1;
-		coll->ph[i]->eat_time = (long)coll->in.eat_t;
-		coll->ph[i]->sleep_time = (long)coll->in.sleep_t;
-		coll->ph[i]->state_changed = 0;
-		coll->ph[i]->thinked = 0;
-		coll->ph[i]->num_fork = 0;
-		coll->ph[i]->meal_count = 0;
-		if (coll->in.eat_num == -1)
-			coll->ph[i]->meal_count = -1;
-		coll->ph[i]->right_fork = NULL;
-		if (i == 0 && coll->in.philo_num > 1)
-			coll->ph[i]->right_fork = &coll->fork[coll->in.philo_num - 1];
-		else if (i > 0)
-			coll->ph[i]->right_fork = &coll->fork[i - 1];
-		coll->ph[i]->left_fork = &coll->fork[i];
-		coll->ph[i]->sim_end = &coll->th.sim_end;
-		coll->ph[i]->finish = &coll->finish;
-		coll->ph[i]->modify_state = &coll->modify_state;
-		i++;
-	}
-	return (1);
 }

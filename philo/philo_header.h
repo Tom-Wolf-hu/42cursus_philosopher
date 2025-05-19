@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 10:04:43 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 10:32:55 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,8 +106,9 @@ int		eat_func(t_philo *ph);
 int		more_philo(t_coll *coll_orig);
 
 //philo_close.c
-void	free_memory(t_coll *coll);
 int		join_philo_threads(t_thread *th, int num_threads);
+void	destroy_mutexes(t_coll *coll);
+void	free_memory(t_coll *coll);
 
 /*
 	The following test_func.c file consist functions which helped during
