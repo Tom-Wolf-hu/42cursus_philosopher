@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 14:42:12 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 18:06:11 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ typedef struct s_coll
 	t_input			in;
 	t_thread		th;
 	t_philo			**ph;
+	pthread_mutex_t	start;
 	pthread_mutex_t	finish;
 	pthread_mutex_t	modify_state;
 	pthread_mutex_t	*fork;

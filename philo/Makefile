@@ -12,15 +12,15 @@ SRC =	philo_main.c \
 		philo_more_philo.c \
 		philo_check_state.c \
 		philo_close.c \
-		philo_coll_init.c \
-		test_funcs.c
+		philo_coll_init.c
 
 OBJ_DIR = obj
 OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)
 
 CC = cc
 HEADER = -I.
-CFLAGS = -Wall -Wextra -Werror -pthread -g
+CFLAGS = -Wall -Wextra -Werror -pthread -g -fsanitize=thread
+#-fsanitize=thread
 RM = rm -f
 RM_DIR = rm -rf
 

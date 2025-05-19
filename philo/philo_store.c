@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:14:37 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 10:56:31 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 18:16:26 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,11 @@ int	create_fork_mutexes(t_coll *coll)
 
 int	create_control_mutexes(t_coll *coll)
 {
+	if (pthread_mutex_init(&coll->start, NULL) != 0)
+	{
+		write_stderr("The start mutex initialization failed.\n");
+		return (-2);
+	}
 	if (pthread_mutex_init(&coll->finish, NULL) != 0)
 	{
 		write_stderr("The finish mutex initialization failed.\n");

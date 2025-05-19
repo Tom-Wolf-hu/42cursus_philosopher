@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 11:40:36 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 18:20:03 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,35 @@ int	philo_threads(t_coll *coll)
 	return (0);
 }
 
+static int	wait_get_th_start_t(t_coll	*coll)
+{
+	if (pthread_mutex_lock(&coll->start) != 0)
+	{
+		write_stderr("Failed to lock start mutex.\n");
+		return (-1);
+	}
+	while (coll->th.start_t < 0)
+	{
+		if (pthread_mutex_unlock(&coll->start) != 0)
+		{
+			write_stderr("Failed to unlock start mutex.\n");
+			return (-1);
+		}
+		usleep(100);
+		if (pthread_mutex_lock(&coll->start) != 0)
+		{
+			write_stderr("Failed to lock start mutex.\n");
+			return (-1);
+		}
+	}
+	if (pthread_mutex_unlock(&coll->start) != 0)
+	{
+		write_stderr("Failed to unlock start mutex.\n");
+		return (-1);
+	}
+	return (0);
+}
+
 void	*print_monitor(void *arg)
 {
 	t_coll	*coll;
@@ -44,11 +73,8 @@ void	*print_monitor(void *arg)
 
 	i = -1;
 	coll = (t_coll *)arg;
-	while (coll->th.start_t < 0)
-	{
-		usleep(10);
-		continue ;
-	}
+	if (wait_get_th_start_t(coll) < 0)
+		return ((void *)1);
 	while (++i < coll->in.philo_num)
 		print_message(get_current_time() - coll->th.start_t, i + 1, THINK);
 	if (coll->in.philo_num == 1)
@@ -74,11 +100,21 @@ int	print_thread(t_coll *coll)
 	}
 	if (philo_threads(coll) < 0)
 		return (-2);
+	if (pthread_mutex_lock(&coll->start) != 0)
+	{
+		write_stderr("Failed to lock start mutex.\n");
+		return (-3);
+	}
 	coll->th.start_t = get_current_time();
+	if (pthread_mutex_unlock(&coll->start) != 0)
+	{
+		write_stderr("Failed to unlock start mutex.\n");
+		return (-4);
+	}
 	if (coll->th.start_t < 0)
 	{
 		write_stderr("Failed to get the start_time");
-		return (-3);
+		return (-5);
 	}
 	return (0);
 }

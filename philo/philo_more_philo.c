@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:43:37 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/19 11:23:42 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 19:11:18 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,11 +90,20 @@ static int	check_die_and_state(t_coll *coll)
 		return (curren_t);
 	while (++i < coll->in.philo_num)
 	{
-		if (check_die(coll, curren_t, i))
-			return (1);
+		// if (check_die(coll, curren_t, i))
+		// 	return (1);
 		if (pthread_mutex_lock(&coll->modify_state) != 0)
 		{
 			write_stderr("Failed to lock modify_state mutex in check_state.\n");
+			return (1);
+		}
+		if (check_die(coll, curren_t, i))
+		{
+			if (pthread_mutex_unlock(&coll->modify_state) != 0)
+			{
+				write_stderr("Failed to unlock modify_state"
+					" mutex in check_state.\n");
+			}
 			return (1);
 		}
 		check_state(coll, curren_t, i);
@@ -117,7 +126,7 @@ int	more_philo(t_coll *coll)
 		if (coll->in.eat_num != -1)
 			if (check_meal_count(coll))
 				return (-2);
-		usleep(200);
+		// usleep(200);
 	}
 	return (0);
 }
