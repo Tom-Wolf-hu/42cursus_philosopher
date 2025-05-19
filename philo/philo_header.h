@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 10:32:55 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 11:24:36 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ int		check_input(int argc, char **argv, t_input *in_args);
 void	store_input(int input_num, t_input *in_args);
 int		create_control_mutexes(t_coll *coll);
 int		create_fork_mutexes(t_coll *coll);
+
+//philo_coll_init.c
 int		coll_init(t_coll *coll);
 
 //philo_action.c
@@ -104,6 +106,9 @@ int		eat_func(t_philo *ph);
 
 //philo_more_philo.c
 int		more_philo(t_coll *coll_orig);
+
+//philo_check_state.c
+void	check_state(t_coll *coll, long curren_t, int i);
 
 //philo_close.c
 int		join_philo_threads(t_thread *th, int num_threads);

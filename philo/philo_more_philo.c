@@ -6,11 +6,27 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:43:37 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/19 09:41:40 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 11:23:42 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_header.h"
+
+static int	change_sim_end(t_coll *coll)
+{
+	if (pthread_mutex_lock(&coll->finish) != 0)
+	{
+		write_stderr("Failed to lock finish mutex.\n");
+		return (-1);
+	}
+	coll->th.sim_end = 1;
+	if (pthread_mutex_unlock(&coll->finish) != 0)
+	{
+		write_stderr("Failed to unlock finish mutex.\n");
+		return (-1);
+	}
+	return (0);
+}
 
 static int	check_meal_count(t_coll *coll)
 {
@@ -27,17 +43,8 @@ static int	check_meal_count(t_coll *coll)
 	}
 	if (count == coll->in.philo_num)
 	{
-		if (pthread_mutex_lock(&coll->finish) != 0)
-		{
-			write_stderr("Failed to lock finish mutex in check_meal_count.\n");
-			return (-1);
-		}
-		coll->th.sim_end = 1;
-		if (pthread_mutex_unlock(&coll->finish) != 0)
-		{
-			write_stderr("Failed to unlock finish mutex in check_die.\n");
-			return (-1);
-		}
+		if (change_sim_end(coll) < 0)
+			return (1);
 		printf("\033[1;32mAll philosophers eat at"
 			" least %d times.\033[0m\n", coll->in.eat_num);
 		return (1);
@@ -51,17 +58,8 @@ static int	check_die(t_coll *coll, long curren_t, int i)
 	{
 		if (curren_t - coll->th.start_t > coll->in.die_t)
 		{
-			if (pthread_mutex_lock(&coll->finish) != 0)
-			{
-				write_stderr("Failed to lock finish mutex in check_die.\n");
+			if (change_sim_end(coll) < 0)
 				return (1);
-			}
-			coll->th.sim_end = 1;
-			if (pthread_mutex_unlock(&coll->finish) != 0)
-			{
-				write_stderr("Failed to unlock finish mutex in check_die.\n");
-				return (1);
-			}
 			print_message(curren_t - coll->th.start_t,
 				coll->ph[i]->philo_id, DIE);
 			return (1);
@@ -71,17 +69,8 @@ static int	check_die(t_coll *coll, long curren_t, int i)
 	{
 		if (curren_t - coll->ph[i]->eat_start_t > coll->in.die_t)
 		{
-			if (pthread_mutex_lock(&coll->finish) != 0)
-			{
-				write_stderr("Failed to lock finish mutex in check_die.\n");
+			if (change_sim_end(coll) < 0)
 				return (1);
-			}
-			coll->th.sim_end = 1;
-			if (pthread_mutex_unlock(&coll->finish) != 0)
-			{
-				write_stderr("Failed to unlock finish mutex in check_die.\n");
-				return (1);
-			}
 			print_message(curren_t - coll->ph[i]->eat_start_t,
 				coll->ph[i]->philo_id, DIE);
 			return (1);
@@ -90,53 +79,16 @@ static int	check_die(t_coll *coll, long curren_t, int i)
 	return (0);
 }
 
-static void	check_state(t_coll *coll, long curren_t, int i)
-{
-	if (!coll->ph[i]->state_changed)
-		return ;
-	if (coll->ph[i]->thinked != 1)
-	{
-		coll->ph[i]->thinked = 1;
-		print_message(curren_t - coll->th.start_t,
-			coll->ph[i]->philo_id, THINK);
-	}
-	if (coll->ph[i]->st == FORK)
-		print_message(curren_t - coll->th.start_t,
-			coll->ph[i]->philo_id, FORK);
-	if (coll->ph[i]->st == EAT)
-	{
-		if (coll->ph[i]->thinked != 1)
-			print_message(curren_t - coll->th.start_t,
-				coll->ph[i]->philo_id, THINK);
-		if (coll->ph[i]->num_fork == 0)
-			print_message(curren_t - coll->th.start_t,
-				coll->ph[i]->philo_id, FORK);
-		print_message(curren_t - coll->th.start_t, coll->ph[i]->philo_id, FORK);
-		print_message(curren_t - coll->th.start_t, coll->ph[i]->philo_id, EAT);
-		coll->ph[i]->thinked = 0;
-	}
-	if (coll->ph[i]->st == SLEEP)
-		print_message(curren_t - coll->th.start_t,
-			coll->ph[i]->philo_id, SLEEP);
-	if (coll->ph[i]->st == THINK)
-	{
-		coll->ph[i]->thinked = 1;
-		print_message(curren_t - coll->th.start_t,
-			coll->ph[i]->philo_id, THINK);
-	}
-	coll->ph[i]->state_changed = 0;
-}
-
 static int	check_die_and_state(t_coll *coll)
 {
 	int		i;
 	long	curren_t;
 
-	i = 0;
+	i = -1;
 	curren_t = get_current_time();
 	if (curren_t == -1)
 		return (curren_t);
-	while (i < coll->in.philo_num)
+	while (++i < coll->in.philo_num)
 	{
 		if (check_die(coll, curren_t, i))
 			return (1);
@@ -152,7 +104,6 @@ static int	check_die_and_state(t_coll *coll)
 				" mutex in check_state.\n");
 			return (1);
 		}
-		i++;
 	}
 	return (0);
 }

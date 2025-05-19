@@ -9,6 +9,7 @@ SRC =	philo_main.c \
 		philo_utils.c \
 		philo_action.c \
 		philo_more_philo.c \
+		philo_check_state.c \
 		philo_close.c \
 		philo_coll_init.c \
 		test_funcs.c
