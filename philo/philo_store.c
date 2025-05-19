@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:14:37 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 18:16:26 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 23:27:58 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,11 @@ int	create_control_mutexes(t_coll *coll)
 	{
 		write_stderr("The finish mutex initialization failed.\n");
 		return (-1);
+	}
+	if (pthread_mutex_init(&coll->eat_count, NULL) != 0)
+	{
+		write_stderr("The eat_count mutex initialization failed.\n");
+		return (-2);
 	}
 	if (pthread_mutex_init(&coll->modify_state, NULL) != 0)
 	{

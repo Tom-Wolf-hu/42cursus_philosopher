@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 18:06:11 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/19 23:59:22 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_thread
 	pthread_t		*philo;
 	pthread_t		monitor;
 	int				sim_end;
+	int				count_enough_eat;
 }	t_thread;
 
 typedef struct s_philo
@@ -56,10 +57,13 @@ typedef struct s_philo
 	int				thinked;
 	int				num_fork;
 	int				meal_count;
+	int				eat_num;
 	int				*sim_end;
+	int				*count_enough_eat;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*finish;
+	pthread_mutex_t	*eat_count;
 	pthread_mutex_t	*modify_state;
 	t_state			st;
 }	t_philo;
@@ -72,6 +76,7 @@ typedef struct s_coll
 	t_philo			**ph;
 	pthread_mutex_t	start;
 	pthread_mutex_t	finish;
+	pthread_mutex_t	eat_count;
 	pthread_mutex_t	modify_state;
 	pthread_mutex_t	*fork;
 }	t_coll;
