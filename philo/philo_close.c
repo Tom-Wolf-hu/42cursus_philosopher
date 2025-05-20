@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 10:52:46 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/20 11:38:02 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/20 15:07:54 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,7 @@ void	destroy_mutexes(t_coll *coll)
 	if (coll->in.philo_num > 0 && pthread_mutex_destroy(&coll->finish) != 0)
 		write_stderr("Failed to destroy the finish mutex.\n");
 	if (coll->in.philo_num > 0 && pthread_mutex_destroy(&coll->eat_count) != 0)
-	{
 		write_stderr("Failed to destroy the eat_count mutex.\n");
-		perror("\033[1;33mThe error is\033[0m");
-	}
 	if (coll->in.philo_num > 0
 		&& pthread_mutex_destroy(&coll->modify_state) != 0)
 		write_stderr("Failed to destroy the modify_state mutex.\n");

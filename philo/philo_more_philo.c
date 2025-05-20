@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:43:37 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/20 13:39:48 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/20 15:12:38 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,11 +106,6 @@ static int	check_die_and_state(t_coll *coll)
 	return (0);
 }
 
-/*
-	In the while cycle previously I used usleep(200).
-	However when I had to modify the check_die_and_state function
-	the reason of data race, with 200 number philos doesn't work anymore.
-*/
 int	more_philo(t_coll *coll)
 {
 	int	check_die;

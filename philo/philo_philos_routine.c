@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_philos_routine.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 11:39:13 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/19 13:39:21 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/20 15:06:47 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,12 @@ static int	eat_procedure(t_philo *ph)
 		return (-1);
 	if (eat_func(ph) < 0)
 		return (-4);
-	if (pthread_mutex_unlock(second_fork) != 0)
+	if (pthread_mutex_unlock(first_fork) != 0)
 	{
 		write_stderr("Failed to unlock the second fork.\n");
 		return (-5);
 	}
-	if (pthread_mutex_unlock(first_fork) != 0)
+	if (pthread_mutex_unlock(second_fork) != 0)
 	{
 		write_stderr("Failed to unlock the first fork.\n");
 		return (-6);
@@ -91,6 +91,8 @@ static int	do_eat_sleep_think(t_philo *ph)
 			return (-3);
 		if (change_philo_state(ph, THINK) < 0)
 			return (-1);
+		if (ph->eat_time >= ph->sleep_time)
+			my_usleep(ph->eat_time - ph->sleep_time + 1);
 		if (pthread_mutex_lock(ph->finish) != 0)
 		{
 			write_stderr("Failed to lock finish mutex in more_philo.\n");
