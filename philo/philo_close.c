@@ -6,7 +6,7 @@
 /*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 10:52:46 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/20 01:39:02 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/20 08:48:01 by tamas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,24 +28,24 @@ int	change_sim_end(t_coll *coll)
 	return (0);
 }
 
-int	join_philo_threads(t_thread *th, int num_threads)
+int	join_philo_threads(t_thread *th, t_philo **ph, int num_threads)
 {
 	int		i;
-	void	*join_result;
-	int		*result;
 
 	i = 0;
-	join_result = NULL;
 	while (i < num_threads)
 	{
-		if (pthread_join(th->philo[i], &join_result) != 0)
+		if (pthread_join(th->philo[i], NULL) != 0)
 		{
 			write_stderr("Failed to join philo thread.\n");
 			return (0);
 		}
-		result = (int *)join_result;
-		if (result != 0)
-			write_stderr("Problem occur in philo thread.\n");
+		if (ph[i]->exit_status != 0)
+		{
+			write_stderr("\033[1;31mProblem occur in philo thread.\033[0m\n");
+			printf("\033[1;31mThe [%d] philo thread return"
+				" value: %d\033[0m\n", ph[i]->philo_id, ph[i]->exit_status);
+		}
 		printf("\033[1;38mThe %d philo joined.\033[0m\n", i + 1);
 		i++;
 	}
