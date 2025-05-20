@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 11:39:13 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/20 15:06:47 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/20 15:27:28 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ static int	do_eat_sleep_think(t_philo *ph)
 			return (-3);
 		if (change_philo_state(ph, THINK) < 0)
 			return (-1);
-		if (ph->eat_time >= ph->sleep_time)
+		if (ph->philo_num % 2 == 1 && ph->eat_time >= ph->sleep_time)
 			my_usleep(ph->eat_time - ph->sleep_time + 1);
 		if (pthread_mutex_lock(ph->finish) != 0)
 		{

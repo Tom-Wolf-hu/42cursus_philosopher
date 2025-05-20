@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_header.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:04:17 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/20 08:48:46 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/20 15:25:15 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_thread
 typedef struct s_philo
 {
 	int				philo_id;
+	int				philo_num;
 	long			eat_start_t;
 	long			eat_time;
 	long			sleep_time;

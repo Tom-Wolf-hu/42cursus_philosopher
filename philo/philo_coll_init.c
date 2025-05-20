@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_coll_init.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 10:55:05 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/20 08:33:51 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/20 15:26:13 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ static int	coll_ph_allocate(t_coll *coll)
 static void	coll_ph_while_part(t_coll *coll, int i)
 {
 	coll->ph[i]->philo_id = i + 1;
+	coll->ph[i]->philo_num = coll->in.philo_num;
 	coll->ph[i]->eat_start_t = -1;
 	coll->ph[i]->eat_time = (long)coll->in.eat_t;
 	coll->ph[i]->sleep_time = (long)coll->in.sleep_t;
