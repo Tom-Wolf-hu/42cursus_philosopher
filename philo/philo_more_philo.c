@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:43:37 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/20 11:14:38 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/20 13:39:48 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static int	check_die(t_coll *coll, long curren_t, int i)
 		{
 			if (change_sim_end(coll) < 0)
 				return (1);
-			print_message(curren_t - coll->ph[i]->eat_start_t,
+			print_message(curren_t - coll->th.start_t,
 				coll->ph[i]->philo_id, DIE);
 			return (1);
 		}

@@ -19,7 +19,7 @@ OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)
 
 CC = cc
 HEADER = -I.
-CFLAGS = -Wall -Wextra -Werror -pthread -g -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -pthread -g
 #-fsanitize=thread -fsanitize=address
 RM = rm -f
 RM_DIR = rm -rf
