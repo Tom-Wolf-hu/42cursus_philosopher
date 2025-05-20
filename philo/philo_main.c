@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/20 10:15:33 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/20 11:15:03 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,6 @@ int	main(int argc, char **argv)
 	}
 	if (!join_philo_threads(&coll.th, coll.ph, coll.in.philo_num))
 		return (1);
-	write(1, "passed5\n", 8);
 	free_memory(&coll);
 	return (0);
 }

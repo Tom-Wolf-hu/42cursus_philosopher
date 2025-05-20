@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:43:37 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/20 10:14:39 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/20 11:14:38 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 static int	check_meal_count(t_coll *coll)
 {
+	int	result;
+
+	result = 0;
 	if (pthread_mutex_lock(&coll->eat_count) != 0)
 	{
 		write_stderr("Failed to lock eat_count mutex.\n");
@@ -22,17 +25,17 @@ static int	check_meal_count(t_coll *coll)
 	if (coll->th.count_enough_eat == coll->in.philo_num)
 	{
 		if (change_sim_end(coll) < 0)
-			return (1);
+			result = 1;
 		printf("\033[1;32mAll philosophers eat at"
 			" least %d times.\033[0m\n", coll->in.eat_num);
-		return (1);
+		result = 1;
 	}
 	if (pthread_mutex_unlock(&coll->eat_count) != 0)
 	{
 		write_stderr("Failed to unlock eat_count mutex.\n");
 		return (-1);
 	}
-	return (0);
+	return (result);
 }
 
 static int	check_die(t_coll *coll, long curren_t, int i)
