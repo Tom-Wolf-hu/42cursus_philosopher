@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_store.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:14:37 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/19 23:27:58 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/20 10:17:05 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,22 +62,22 @@ int	create_control_mutexes(t_coll *coll)
 	if (pthread_mutex_init(&coll->start, NULL) != 0)
 	{
 		write_stderr("The start mutex initialization failed.\n");
-		return (-2);
+		return (-1);
 	}
 	if (pthread_mutex_init(&coll->finish, NULL) != 0)
 	{
 		write_stderr("The finish mutex initialization failed.\n");
-		return (-1);
+		return (-2);
 	}
 	if (pthread_mutex_init(&coll->eat_count, NULL) != 0)
 	{
 		write_stderr("The eat_count mutex initialization failed.\n");
-		return (-2);
+		return (-3);
 	}
 	if (pthread_mutex_init(&coll->modify_state, NULL) != 0)
 	{
 		write_stderr("The modify_state mutex initialization failed.\n");
-		return (-2);
+		return (-4);
 	}
 	return (0);
 }

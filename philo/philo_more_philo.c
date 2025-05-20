@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_more_philo.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tamas <tamas@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 23:43:37 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/20 01:12:53 by tamas            ###   ########.fr       */
+/*   Updated: 2025/05/20 10:14:39 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	check_meal_count(t_coll *coll)
 	if (pthread_mutex_lock(&coll->eat_count) != 0)
 	{
 		write_stderr("Failed to lock eat_count mutex.\n");
-		return (1);
+		return (-1);
 	}
 	if (coll->th.count_enough_eat == coll->in.philo_num)
 	{
@@ -30,7 +30,7 @@ static int	check_meal_count(t_coll *coll)
 	if (pthread_mutex_unlock(&coll->eat_count) != 0)
 	{
 		write_stderr("Failed to unlock eat_count mutex.\n");
-		return (1);
+		return (-1);
 	}
 	return (0);
 }
@@ -110,13 +110,22 @@ static int	check_die_and_state(t_coll *coll)
 */
 int	more_philo(t_coll *coll)
 {
+	int	check_die;
+	int	check_meal;	
+
+	check_meal = 0;
 	while (!coll->th.sim_end)
 	{
-		if (check_die_and_state(coll))
-			return (-1);
+		check_die = check_die_and_state(coll);
 		if (coll->in.eat_num != -1)
-			if (check_meal_count(coll))
-				return (-2);
+			check_meal = check_meal_count(coll);
+		if (check_die == 1 || check_meal == 1)
+			return (1);
+		else if (check_die < 0 || check_meal < 0)
+		{
+			write_stderr("Error in check_die or check_meal_count.\n");
+			return (-1);
+		}
 	}
 	return (0);
 }
