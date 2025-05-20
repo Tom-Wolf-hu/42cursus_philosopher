@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:02:05 by tfarkas           #+#    #+#             */
-/*   Updated: 2025/05/20 11:15:03 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/20 11:38:41 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ int	philo_threads(t_coll *coll)
 			write_stderr("philo thread creation failed.\n");
 			return (-2);
 		}
-		printf("\033[1;35mThe %d philo created.\033[0m\n", i + 1);
 		i++;
 	}
 	return (0);
@@ -126,13 +125,13 @@ int	main(int argc, char **argv)
 	if (!check_input(argc, argv, &coll.in))
 		return (1);
 	if (!coll_init(&coll))
-		return (1);
+		return (free_memory(&coll), 1);
 	if (print_thread(&coll) < 0)
 		return (free_memory(&coll), 1);
 	if (pthread_join(coll.th.monitor, NULL) != 0)
 	{
 		write_stderr("Failed to join the monitor thread.\n");
-		return (1);
+		return (free_memory(&coll), 1);
 	}
 	if (coll.th.exit_status != 0)
 	{
@@ -141,7 +140,7 @@ int	main(int argc, char **argv)
 			" value: %d\033[0m\n", coll.th.exit_status);
 	}
 	if (!join_philo_threads(&coll.th, coll.ph, coll.in.philo_num))
-		return (1);
+		return (free_memory(&coll), 1);
 	free_memory(&coll);
 	return (0);
 }

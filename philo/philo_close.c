@@ -6,7 +6,7 @@
 /*   By: tfarkas <tfarkas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 10:52:46 by tamas             #+#    #+#             */
-/*   Updated: 2025/05/20 10:19:28 by tfarkas          ###   ########.fr       */
+/*   Updated: 2025/05/20 11:38:02 by tfarkas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ int	join_philo_threads(t_thread *th, t_philo **ph, int num_threads)
 			printf("\033[1;31mThe [%d] philo thread return"
 				" value: %d\033[0m\n", ph[i]->philo_id, ph[i]->exit_status);
 		}
-		printf("\033[1;38mThe %d philo joined.\033[0m\n", i + 1);
 		i++;
 	}
 	return (1);
